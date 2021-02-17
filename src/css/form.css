@@ -1,0 +1,114 @@
+.form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -150px;
+  margin-left: -250px;
+  width: 500px;
+  height: 300px;
+  color: #FFFFFF;
+}
+.form .tabs {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0px;
+}
+.form .tabs .tab-btn {
+  cursor: pointer;
+  background-color: transparent;
+  color: #ADADAD;
+  font-size: 25px;
+  padding: 5px 7.5px;
+  border-radius: 3px;
+  transition: all 0.2s ease-out;
+}
+.form .tabs .tab-btn:first-child {
+  margin-right: 5px;
+}
+.form .tabs .tab-btn:last-child {
+  margin-left: 5px;
+}
+.form .tabs .tab-btn:hover {
+  color: #FFFFFF;
+}
+.form .tabs .tab-btn.active {
+  color: #212121;
+  background-color: #FFFFFF;
+}
+.form .available {
+  display: flex;
+  flex-direction: column;
+}
+.form .tabulator .tab {
+  display: flex;
+  flex-direction: column;
+}
+.form .tabulator .tab .form-title {
+  text-align: center;
+  font-size: 20px;
+  margin: 10px 0px 10px 0px;
+}
+.form .tabulator .tab .form-btn {
+  cursor: pointer;
+  background-color: #212121;
+  color: #FFFFFF;
+  font-size: 17px;
+  padding: 5px 7.5px;
+  margin: 10px auto;
+  border: 1px solid #ADADAD;
+  border-radius: 3px;
+  transition: all 0.2s ease-out;
+}
+.form .tabulator .tab .form-btn:hover {
+  background-color: #FFFFFF;
+  color: #212121;
+}
+.form .tabulator .tab #files {
+  margin: 10px auto;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+.form .tabulator .tab #file-list {
+  margin: 0px auto;
+}
+.form .tabulator .tab #file-list li {
+  margin: 10px;
+  text-align: center;
+}
+.form .tabulator .tab #file-list li a {
+  cursor: pointer;
+}
+.form .tabulator .tab #file-list li a:hover {
+  border-bottom: 1px solid #FFFFFF;
+}
+.form .tabulator .tab .buttons {
+  display: flex;
+  justify-content: center;
+}
+.form .tabulator .tab .buttons .form-btn:first-child {
+  margin-right: 5px;
+}
+.form .tabulator .tab .buttons .form-btn:last-child {
+  margin-left: 5px;
+}
+.form .tabulator .tab #token {
+  width: 350px;
+  text-align: center;
+  margin: 20px auto;
+  padding: 6px 7.5px;
+  background-color: #212121;
+  color: #FFFFFF;
+  border: 1px solid #ADADAD;
+  border-radius: 3px;
+  font-size: 17px;
+}
+.form .error-box {
+  color: #E62737;
+  text-align: center;
+  font-size: 20px;
+  margin: 20px 0px 10px 0px;
+}
