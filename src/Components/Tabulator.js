@@ -7,7 +7,7 @@ export default class Tab extends React.Component {
 	}
 
 	render() {
-		let token = this.props.token !== '' ? <h1 className="form-title">Your token: {this.props.token}</h1> : '';
+		let token = this.props.token !== '' ? <h1 className="form-token ">Your token: {this.props.token}</h1> : '';
 		let downloadButton = this.props.fileList.length === 0 ?
 			<button className="form-btn" onClick={this.props.getFilenames}>Check Available</button>
 			: <div className="available">

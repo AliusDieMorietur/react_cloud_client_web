@@ -1,6 +1,7 @@
 import React from 'react';
 import Transport from '../additional/socket'
 import Tab from './Tabulator'
+import RoutedHeader from './Header';
 
 const downloadFile = (name, dataBlob) => {
   const blobUrl = window.URL.createObjectURL(dataBlob);
@@ -13,7 +14,7 @@ const downloadFile = (name, dataBlob) => {
   window.URL.revokeObjectURL(blobUrl);
 };
 
-export default class FileForm extends React.Component {
+export default class Temporary extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -107,35 +108,38 @@ export default class FileForm extends React.Component {
 
   render() {
     return (
-      <div className="form">
-        <div className="tabs">
-          <button
-            className = { "tab-btn " + (this.state.tab === 'upload' ? 'active' : '') }
-            onClick = { () => this.setState({ tab: 'upload' }) }>
-            Upload
-          </button>
-          <button
-            className = { "tab-btn " + (this.state.tab === 'download' ? 'active' : '') }
-            onClick = { () => this.setState({ tab: 'download' }) }>
-            Download
-          </button>
+      <div>
+        <RoutedHeader/>
+        <div className="temporary">
+          <div className="tabs">
+            <button
+              className = { "tab-btn " + (this.state.tab === 'upload' ? 'active' : '') }
+              onClick = { () => this.setState({ tab: 'upload' }) }>
+              Upload
+            </button>
+            <button
+              className = { "tab-btn " + (this.state.tab === 'download' ? 'active' : '') }
+              onClick = { () => this.setState({ tab: 'download' }) }>
+              Download
+            </button>
+          </div>
+          <Tab
+            tab = { this.state.tab }
+            value = { this.state.value }
+            change = { this.fileUploadChange }
+            chosen = { this.state.chosen }
+            upload = { this.upload }
+            download = { this.download }
+            input = { this.state.input }
+            tokenInputChange = { this.tokenInputChange }
+            fileSelect = { this.fileSelect }
+            token = { this.state.token }
+            getFilenames = { this.getFilenames }
+            fileList = { this.state.dataList }
+            error = { this.state.error }
+          />
+          <h1 className="error-box">{this.state.error}</h1>
         </div>
-        <Tab
-          tab = { this.state.tab }
-          value = { this.state.value }
-          change = { this.fileUploadChange }
-          chosen = { this.state.chosen }
-          upload = { this.upload }
-          download = { this.download }
-          input = { this.state.input }
-          tokenInputChange = { this.tokenInputChange }
-          fileSelect = { this.fileSelect }
-          token = { this.state.token }
-          getFilenames = { this.getFilenames }
-          fileList = { this.state.dataList }
-          error = { this.state.error }
-        />
-        <h1 className="error-box">{this.state.error}</h1>
       </div>
     );
   }

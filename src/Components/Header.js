@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 
-export default class Header extends React.Component {
+class Header extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {};
@@ -14,9 +14,9 @@ export default class Header extends React.Component {
               </div>
               <div className="locations">
                 <Link 
-									className={`location ${this.props.location.pathname === '/' ? 'active' : ''}`} 
-									to="/">
-									Home
+									className={`location ${this.props.location.pathname === '/permanent' ? 'active' : ''}`} 
+									to="/permanent">
+									Permanent
 								</Link>
                 <Link 
 									className={`location ${this.props.location.pathname === '/temporary' ? 'active' : ''}`} 
@@ -27,3 +27,5 @@ export default class Header extends React.Component {
 						</div>
 	}
 }
+
+export default withRouter(props => <Header {...props}/>);

@@ -1,0 +1,95 @@
+// out: ../css/permanent.css
+
+@background: #212121;
+@font: #FFFFFF;
+@border: #ADADAD;
+@error: #E62737;
+
+.permanent {
+  .explorer {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    color: @font;
+    border: 1px solid @font;
+    border-radius: 3px;
+    .list-header {
+      display: flex;
+      .path {
+        flex-grow: 1;
+        margin: auto 0px;
+        text-align: start;
+      }
+      .control-buttons {
+        flex-grow: 0;
+        .control-button {
+          margin: 10px;
+        }
+      }
+    }
+    .main {
+      display: flex;
+      font-size: 20px;
+      border: 1px solid @font;
+      .navbar {
+        flex-grow: 0;
+        padding: 15px;
+        border-right: 1px solid @font;
+        .file-title {
+          text-align: start;
+        }
+        .accordeon {
+          display: flex;
+          flex-direction: column;
+          .accordeon-head {
+            display: flex;
+            .dropown-button {
+              background-color: transparent;
+              .dropown-icon {
+                width: 10px;
+                height: 10px;
+                &.active {
+                  transform: rotate(180deg);
+                }
+              }
+            }
+          }
+          .accordeon-body {
+            display: none;
+            &.active {
+              display: flex;
+              flex-direction: column;
+            }
+          }
+        }
+      }
+      .hierarchy {
+        flex-grow: 1;
+        .current-folder-list {
+          margin: 0px 10px 0px 0px;
+          .folder-list-el {
+            display: flex;
+            padding: 5px 15px;
+            margin: auto;
+            &:last-child {
+              border-bottom: none;
+            }
+            .el-icon {
+              flex-grow: 0;
+              margin: auto 10px auto 0px;
+              width: 25px;
+              height: 25px;
+            }
+            .el-name {
+              flex-grow: 1;
+              text-align: start;
+            }
+            .el-capacity {
+              flex-grow: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}

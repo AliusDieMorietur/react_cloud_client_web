@@ -1,0 +1,86 @@
+.permanent .explorer {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  color: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  border-radius: 3px;
+}
+.permanent .explorer .list-header {
+  display: flex;
+}
+.permanent .explorer .list-header .path {
+  flex-grow: 1;
+  margin: auto 0px;
+  text-align: start;
+}
+.permanent .explorer .list-header .control-buttons {
+  flex-grow: 0;
+}
+.permanent .explorer .list-header .control-buttons .control-button {
+  margin: 10px;
+}
+.permanent .explorer .main {
+  display: flex;
+  font-size: 20px;
+  border: 1px solid #FFFFFF;
+}
+.permanent .explorer .main .navbar {
+  flex-grow: 0;
+  padding: 15px;
+  border-right: 1px solid #FFFFFF;
+}
+.permanent .explorer .main .navbar .file-title {
+  text-align: start;
+}
+.permanent .explorer .main .navbar .accordeon {
+  display: flex;
+  flex-direction: column;
+}
+.permanent .explorer .main .navbar .accordeon .accordeon-head {
+  display: flex;
+}
+.permanent .explorer .main .navbar .accordeon .accordeon-head .dropown-button {
+  background-color: transparent;
+}
+.permanent .explorer .main .navbar .accordeon .accordeon-head .dropown-button .dropown-icon {
+  width: 10px;
+  height: 10px;
+}
+.permanent .explorer .main .navbar .accordeon .accordeon-head .dropown-button .dropown-icon.active {
+  transform: rotate(180deg);
+}
+.permanent .explorer .main .navbar .accordeon .accordeon-body {
+  display: none;
+}
+.permanent .explorer .main .navbar .accordeon .accordeon-body.active {
+  display: flex;
+  flex-direction: column;
+}
+.permanent .explorer .main .hierarchy {
+  flex-grow: 1;
+}
+.permanent .explorer .main .hierarchy .current-folder-list {
+  margin: 0px 10px 0px 0px;
+}
+.permanent .explorer .main .hierarchy .current-folder-list .folder-list-el {
+  display: flex;
+  padding: 5px 15px;
+  margin: auto;
+}
+.permanent .explorer .main .hierarchy .current-folder-list .folder-list-el:last-child {
+  border-bottom: none;
+}
+.permanent .explorer .main .hierarchy .current-folder-list .folder-list-el .el-icon {
+  flex-grow: 0;
+  margin: auto 10px auto 0px;
+  width: 25px;
+  height: 25px;
+}
+.permanent .explorer .main .hierarchy .current-folder-list .folder-list-el .el-name {
+  flex-grow: 1;
+  text-align: start;
+}
+.permanent .explorer .main .hierarchy .current-folder-list .folder-list-el .el-capacity {
+  flex-grow: 0;
+}

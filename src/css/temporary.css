@@ -1,19 +1,13 @@
-.form {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -150px;
-  margin-left: -250px;
-  width: 500px;
-  height: 300px;
+.temporary {
+  margin-top: 55%;
   color: #FFFFFF;
 }
-.form .tabs {
+.temporary .tabs {
   display: flex;
   justify-content: center;
   margin: 10px 0px;
 }
-.form .tabs .tab-btn {
+.temporary .tabs .tab-btn {
   cursor: pointer;
   background-color: transparent;
   color: #ADADAD;
@@ -22,33 +16,33 @@
   border-radius: 3px;
   transition: all 0.2s ease-out;
 }
-.form .tabs .tab-btn:first-child {
+.temporary .tabs .tab-btn:first-child {
   margin-right: 5px;
 }
-.form .tabs .tab-btn:last-child {
+.temporary .tabs .tab-btn:last-child {
   margin-left: 5px;
 }
-.form .tabs .tab-btn:hover {
+.temporary .tabs .tab-btn:hover {
   color: #FFFFFF;
 }
-.form .tabs .tab-btn.active {
+.temporary .tabs .tab-btn.active {
   color: #212121;
   background-color: #FFFFFF;
 }
-.form .available {
+.temporary .available {
   display: flex;
   flex-direction: column;
 }
-.form .tabulator .tab {
+.temporary .tabulator .tab {
   display: flex;
   flex-direction: column;
 }
-.form .tabulator .tab .form-title {
+.temporary .tabulator .tab .form-title {
   text-align: center;
   font-size: 20px;
   margin: 10px 0px 10px 0px;
 }
-.form .tabulator .tab .form-btn {
+.temporary .tabulator .tab .form-btn {
   cursor: pointer;
   background-color: #212121;
   color: #FFFFFF;
@@ -59,11 +53,11 @@
   border-radius: 3px;
   transition: all 0.2s ease-out;
 }
-.form .tabulator .tab .form-btn:hover {
+.temporary .tabulator .tab .form-btn:hover {
   background-color: #FFFFFF;
   color: #212121;
 }
-.form .tabulator .tab #files {
+.temporary .tabulator .tab #files {
   margin: 10px auto;
   width: 0.1px;
   height: 0.1px;
@@ -72,41 +66,41 @@
   position: absolute;
   z-index: -1;
 }
-.form .tabulator .tab #file-list {
+.temporary .tabulator .tab #file-list {
   margin: 0px auto;
 }
-.form .tabulator .tab #file-list li {
+.temporary .tabulator .tab #file-list li {
   margin: 10px;
   text-align: center;
 }
-.form .tabulator .tab #file-list li a {
+.temporary .tabulator .tab #file-list li a {
   cursor: pointer;
 }
-.form .tabulator .tab #file-list li a:hover {
+.temporary .tabulator .tab #file-list li a:hover {
   border-bottom: 1px solid #FFFFFF;
 }
-.form .tabulator .tab .buttons {
+.temporary .tabulator .tab .buttons {
   display: flex;
   justify-content: center;
 }
-.form .tabulator .tab .buttons .form-btn:first-child {
+.temporary .tabulator .tab .buttons .form-btn:first-child {
   margin-right: 5px;
 }
-.form .tabulator .tab .buttons .form-btn:last-child {
+.temporary .tabulator .tab .buttons .form-btn:last-child {
   margin-left: 5px;
 }
-.form .tabulator .tab #token {
+.temporary .tabulator .tab #token {
   width: 350px;
   text-align: center;
   margin: 20px auto;
-  padding: 6px 7.5px;
+  padding: 5px 7.5px;
   background-color: #212121;
   color: #FFFFFF;
   border: 1px solid #ADADAD;
-  border-radius: 3px;
+  border-radius: 5px;
   font-size: 17px;
 }
-.form .error-box {
+.temporary .error-box {
   color: #E62737;
   text-align: center;
   font-size: 20px;

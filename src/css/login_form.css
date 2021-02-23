@@ -1,0 +1,47 @@
+.login-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -150px;
+  margin-left: -250px;
+  width: 500px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+.login-form .form-title {
+  margin-bottom: 15px;
+  font-size: 40px;
+  color: #FFFFFF;
+}
+.login-form .form-token {
+  margin-bottom: 15px;
+  font-size: 40px;
+  color: #FFFFFF;
+  user-select: text;
+}
+.login-form .form-field {
+  width: 225px;
+  margin: 10px auto;
+  padding: 5px 7.5px;
+  font-size: 17px;
+  color: #FFFFFF;
+  background-color: #212121;
+  border: 1px solid #FFFFFF;
+  border-radius: 5px;
+}
+.login-form .form-button {
+  margin: 10px auto;
+  padding: 5px 7.5px;
+  font-size: 20px;
+  color: #FFFFFF;
+  background-color: #212121;
+  border: 1px solid #FFFFFF;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+.login-form .form-button:hover {
+  color: #212121;
+  background-color: #FFFFFF;
+}
