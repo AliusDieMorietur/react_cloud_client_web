@@ -22,15 +22,13 @@ export default class Temporary extends React.Component {
       tab: 'upload',
       chosen: ['None'],
       token: '',
-      filesSelected: [],
-      dataList: [],
+      availableFiles: [],
       input: '',
       error: ''
     };
 
     this.timer = null;
     this.buffers = [];
-
     this.transport = new Transport(window.location.host, buffer => {
       this.buffers.push(buffer);
     });
@@ -55,15 +53,7 @@ export default class Temporary extends React.Component {
   }
 
   tokenInputChange(event) {
-    this.setState({ input: event.target.value, fileSelected: [], dataList: [] });
-  }
-
-  fileSelect(event) {
-    if (event.target.checked) {
-      this.state.filesSelected.push(event.target.id);
-    } else {
-      this.state.filesSelected.splice(this.state.filesSelected.indexOf(event.target.id), 1);
-    }
+    this.setState({ input: event.target.value, availableFiles: [] });
   }
 
   async upload() {
@@ -75,8 +65,13 @@ export default class Temporary extends React.Component {
     const list = [];
     for (const file of this.state.files) list.push(file.name);
     for (const file of this.state.files) await this.transport.bufferCall(file);
-    this.transport.socketCall('upload', { list })
-      .then(token => this.setState({ token }))
+    this.transport.socketCall('tmpUpload', { list })
+      .then(token => this.setState({ 
+        token, 
+        files: [], 
+        chosen: ['None'], 
+        availableFiles: []
+      }))
       .catch(this.showError);
   }
 
@@ -85,16 +80,16 @@ export default class Temporary extends React.Component {
       this.showError(new Error('Enter valid token please'));
       return;
     };
-    this.transport.socketCall('available-files', { token: this.state.input  })
-      .then(dataList => this.setState({ dataList }))
+    this.transport.socketCall('tmpAvailableFiles', { token: this.state.input  })
+      .then(availableFiles => this.setState({ availableFiles }))
       .catch(this.showError);
   }
 
   download(event) {
     const files = event.target.innerText === 'Download All'
-      ? this.state.dataList
+      ? this.state.availableFiles
       : [event.target.innerText]
-    this.transport.socketCall('download', { 
+    this.transport.socketCall('tmpDownload', { 
       token: this.state.input.trim(), 
       files
     })
@@ -107,6 +102,45 @@ export default class Temporary extends React.Component {
   }
 
   render() {
+    let downloadButton = this.state.availableFiles.length === 0 
+      ? <button className="form-btn" onClick={this.getFilenames}>Check Available</button>
+      : <div className="available">
+          <h1 className="form-title">Available:</h1>
+          <ul id="file-list">
+            {this.state.availableFiles.map(el => 
+              <li>
+                <a download={el} onClick = {this.download}>{el}</a>
+              </li>
+            )}
+          </ul>
+          <button className="form-btn" onClick={this.download}>Download All</button>
+        </div>;
+  
+    let uploadTab = 
+      <div className="upload tab">
+        <input id="files" type="file" value = { this.state.value } onChange = { this.fileUploadChange  } multiple/>
+        { 
+          this.state.token !== '' 
+            ? <h1 className="form-token ">Your token: {this.state.token}</h1> 
+            : '' 
+        }
+        <h1 className="form-title">Chosen:</h1>
+        <ul id="file-list">
+          { this.state.chosen.map((el, index) => <li key={index}>{ el }</li>) }
+        </ul>
+        <div className="buttons">
+          <label className="input-btn form-btn" htmlFor="files">Choose files</label>
+          <button className="form-btn" onClick = { this.upload }>Upload</button>
+        </div>
+      </div>;
+  
+    let downloadTab = 
+      <div className="download tab">
+        <h1 className="form-title">Enter Token</h1>
+        <input id="token" type="text" value = { this.state.input } onChange = { this.tokenInputChange }/>
+        {downloadButton}
+      </div>;
+
     return (
       <div>
         <RoutedHeader/>
@@ -123,21 +157,9 @@ export default class Temporary extends React.Component {
               Download
             </button>
           </div>
-          <Tab
-            tab = { this.state.tab }
-            value = { this.state.value }
-            change = { this.fileUploadChange }
-            chosen = { this.state.chosen }
-            upload = { this.upload }
-            download = { this.download }
-            input = { this.state.input }
-            tokenInputChange = { this.tokenInputChange }
-            fileSelect = { this.fileSelect }
-            token = { this.state.token }
-            getFilenames = { this.getFilenames }
-            fileList = { this.state.dataList }
-            error = { this.state.error }
-          />
+          <div className="tabulator">
+            {this.state.tab === 'upload' ? uploadTab : downloadTab}
+          </div>
           <h1 className="error-box">{this.state.error}</h1>
         </div>
       </div>
