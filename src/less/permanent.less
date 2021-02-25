@@ -1,9 +1,5 @@
 // out: ../css/permanent.css
-
-@background: #212121;
-@font: #FFFFFF;
-@border: #ADADAD;
-@error: #E62737;
+@import "colors.less";
 
 .permanent {
   .explorer {
@@ -11,7 +7,7 @@
     flex-direction: column;
     padding: 10px;
     color: @font;
-    border: 1px solid @font;
+    border: 1px solid @border;
     border-radius: 3px;
     .list-header {
       display: flex;
@@ -23,18 +19,19 @@
       .control-buttons {
         flex-grow: 0;
         .control-button {
-          margin: 10px;
+          background: transparent;
+          margin: 10px 0px 10px 10px;
         }
       }
     }
     .main {
       display: flex;
       font-size: 20px;
-      border: 1px solid @font;
+      border: 1px solid @border;
       .navbar {
         flex-grow: 0;
         padding: 15px;
-        border-right: 1px solid @font;
+        border-right: 1px solid @border;
         .file-title {
           text-align: start;
         }
@@ -43,11 +40,12 @@
           flex-direction: column;
           .accordeon-head {
             display: flex;
-            .dropown-button {
+            .dropdown-button {
               background-color: transparent;
-              .dropown-icon {
-                width: 10px;
-                height: 10px;
+              .dropdown-icon {
+                width: 20px;
+                height: 20px;
+                transition: all 0.1s ease-out;
                 &.active {
                   transform: rotate(180deg);
                 }
@@ -86,6 +84,9 @@
             }
             .el-capacity {
               flex-grow: 0;
+              font-size: 75%;
+              margin: auto;
+              color: @font-weak;
             }
           }
         }

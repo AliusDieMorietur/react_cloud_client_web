@@ -3,7 +3,7 @@
   flex-direction: column;
   padding: 10px;
   color: #FFFFFF;
-  border: 1px solid #FFFFFF;
+  border: 1px solid #ADADAD;
   border-radius: 3px;
 }
 .permanent .explorer .list-header {
@@ -18,17 +18,18 @@
   flex-grow: 0;
 }
 .permanent .explorer .list-header .control-buttons .control-button {
-  margin: 10px;
+  background: transparent;
+  margin: 10px 0px 10px 10px;
 }
 .permanent .explorer .main {
   display: flex;
   font-size: 20px;
-  border: 1px solid #FFFFFF;
+  border: 1px solid #ADADAD;
 }
 .permanent .explorer .main .navbar {
   flex-grow: 0;
   padding: 15px;
-  border-right: 1px solid #FFFFFF;
+  border-right: 1px solid #ADADAD;
 }
 .permanent .explorer .main .navbar .file-title {
   text-align: start;
@@ -40,14 +41,15 @@
 .permanent .explorer .main .navbar .accordeon .accordeon-head {
   display: flex;
 }
-.permanent .explorer .main .navbar .accordeon .accordeon-head .dropown-button {
+.permanent .explorer .main .navbar .accordeon .accordeon-head .dropdown-button {
   background-color: transparent;
 }
-.permanent .explorer .main .navbar .accordeon .accordeon-head .dropown-button .dropown-icon {
-  width: 10px;
-  height: 10px;
+.permanent .explorer .main .navbar .accordeon .accordeon-head .dropdown-button .dropdown-icon {
+  width: 20px;
+  height: 20px;
+  transition: all 0.1s ease-out;
 }
-.permanent .explorer .main .navbar .accordeon .accordeon-head .dropown-button .dropown-icon.active {
+.permanent .explorer .main .navbar .accordeon .accordeon-head .dropdown-button .dropdown-icon.active {
   transform: rotate(180deg);
 }
 .permanent .explorer .main .navbar .accordeon .accordeon-body {
@@ -83,4 +85,7 @@
 }
 .permanent .explorer .main .hierarchy .current-folder-list .folder-list-el .el-capacity {
   flex-grow: 0;
+  font-size: 75%;
+  margin: auto;
+  color: #747474;
 }
