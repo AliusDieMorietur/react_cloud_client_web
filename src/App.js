@@ -4,6 +4,7 @@ import PrivateRoute from './Components/PrivateRoot';
 import Permanent from './Components/Permanent';
 import Temporary from './Components/Temporary';
 import LoginForm from './Components/LoginForm';
+import Transport from './additional/socket';
 
 const NotFound = (props) => <h1>NOT FOUND</h1>;
 
@@ -13,7 +14,17 @@ export default class App extends React.Component {
 		this.state = {
       authed: true
     };
+    this.transport = new Transport();
 	}
+
+  async componentDidMount() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const authed = await this.transport.socketCall('restoreSession', { token });
+      console.log(authed);
+      if (authed) this.setState({ authed: true });
+    }
+  }
 
 	render() {
 		return (
@@ -22,16 +33,36 @@ export default class App extends React.Component {
           <Switch>
             <Route exact path="/"
               render={() => {
-                  return (
-                    this.state.authed ?
-                      <Redirect to="/permanent"/> :
-                      <Redirect to="/login"/> 
-                  )
+                return (
+                  this.state.authed ?
+                    <Redirect to="/permanent"/> :
+                    <Redirect to="/login"/> 
+                )
               }}
             />
-            <PrivateRoute authed={this.state.authed} path='/permanent' component={Permanent} />
-            <PrivateRoute authed={this.state.authed} path='/temporary' component={Temporary} />
-            <Route exact path="/login" component={LoginForm}></Route>
+            <PrivateRoute 
+              authed={this.state.authed} 
+              redirect='/login'
+              path='/permanent' 
+              component={Permanent} 
+            />
+            <Route 
+              exact path='/temporary' 
+              render={() => <Temporary />} 
+            />
+            {/* <PrivateRoute 
+              authed={this.state.authed} 
+              socket={this.socket} 
+              redirect='/login'
+              path='/temporary' 
+              component={Temporary} 
+            /> */}
+            <PrivateRoute 
+              authed={!this.state.authed} 
+              redirect='/permanent'
+              path='/login' 
+              component={LoginForm} 
+            />
             <Route component={NotFound} />
           </Switch>
         </BrowserRouter>
