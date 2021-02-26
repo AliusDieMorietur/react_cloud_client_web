@@ -38,6 +38,7 @@
   flex-direction: column;
 }
 .temporary .tabulator .tab .form-token {
+  margin: auto;
   font-size: 20px;
   user-select: text;
 }
