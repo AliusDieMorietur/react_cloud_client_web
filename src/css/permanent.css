@@ -1,17 +1,23 @@
+.permanent {
+  margin: 3% auto 0px auto;
+  max-width: 900px;
+}
 .permanent .explorer {
   display: flex;
   flex-direction: column;
-  padding: 10px;
-  color: #FFFFFF;
-  border: 1px solid #ADADAD;
+  height: 600px;
+  background-color: #202020;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border-radius: 3px;
 }
 .permanent .explorer .list-header {
   display: flex;
+  background-color: #222222;
 }
 .permanent .explorer .list-header .path {
+  color: #FFFFFF;
   flex-grow: 1;
-  margin: auto 0px;
+  margin: auto 10px;
   text-align: start;
 }
 .permanent .explorer .list-header .control-buttons {
@@ -19,20 +25,46 @@
 }
 .permanent .explorer .list-header .control-buttons .control-button {
   background: transparent;
-  margin: 10px 0px 10px 10px;
+  margin: 10px 5px 10px 5px;
+}
+.permanent .explorer .list-header .control-buttons .control-button:last-child {
+  margin-right: 10;
 }
 .permanent .explorer .main {
   display: flex;
+  height: 100%;
+  padding: 10px 0px;
   font-size: 20px;
-  border: 1px solid #ADADAD;
+  background-color: #121212;
 }
 .permanent .explorer .main .navbar {
   flex-grow: 0;
-  padding: 15px;
-  border-right: 1px solid #ADADAD;
+  width: 200px;
+  padding: 0px 15px;
+  border-right: 1px solid #747474;
+}
+.permanent .explorer .main .navbar .accordeon-title {
+  margin: 5px 0px;
+  color: #747474;
+  transition: all 0.2s ease-out;
+}
+.permanent .explorer .main .navbar .accordeon-title.active {
+  color: #FFFFFF;
+}
+.permanent .explorer .main .navbar .accordeon-title:hover {
+  color: #FFFFFF;
 }
 .permanent .explorer .main .navbar .file-title {
+  margin: 5px 0px;
   text-align: start;
+  color: #747474;
+  transition: all 0.2s ease-out;
+}
+.permanent .explorer .main .navbar .file-title.active {
+  color: #FFFFFF;
+}
+.permanent .explorer .main .navbar .file-title:hover {
+  color: #FFFFFF;
 }
 .permanent .explorer .main .navbar .accordeon {
   display: flex;
@@ -40,9 +72,11 @@
 }
 .permanent .explorer .main .navbar .accordeon .accordeon-head {
   display: flex;
+  cursor: pointer;
 }
 .permanent .explorer .main .navbar .accordeon .accordeon-head .dropdown-button {
   background-color: transparent;
+  cursor: pointer;
 }
 .permanent .explorer .main .navbar .accordeon .accordeon-head .dropdown-button .dropdown-icon {
   width: 20px;
@@ -68,23 +102,34 @@
 .permanent .explorer .main .hierarchy .current-folder-list .folder-list-el {
   display: flex;
   padding: 5px 15px;
-  margin: auto;
+  margin: 12.5px 10px;
+  font-size: 20px;
+  transition: all 0.2s ease-out;
 }
 .permanent .explorer .main .hierarchy .current-folder-list .folder-list-el:last-child {
   border-bottom: none;
 }
 .permanent .explorer .main .hierarchy .current-folder-list .folder-list-el .el-icon {
   flex-grow: 0;
-  margin: auto 10px auto 0px;
+  margin: auto 25px auto 0px;
   width: 25px;
   height: 25px;
 }
 .permanent .explorer .main .hierarchy .current-folder-list .folder-list-el .el-name {
-  flex-grow: 1;
+  flex-grow: 0;
+  color: #747474;
+  cursor: pointer;
   text-align: start;
 }
+.permanent .explorer .main .hierarchy .current-folder-list .folder-list-el .el-name.active {
+  color: #FFFFFF;
+}
+.permanent .explorer .main .hierarchy .current-folder-list .folder-list-el .el-name:hover {
+  color: #FFFFFF;
+}
 .permanent .explorer .main .hierarchy .current-folder-list .folder-list-el .el-capacity {
-  flex-grow: 0;
+  flex-grow: 1;
+  text-align: end;
   font-size: 75%;
   margin: auto;
   color: #747474;

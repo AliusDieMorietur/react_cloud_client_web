@@ -2,46 +2,79 @@
 @import "colors.less";
 
 .permanent {
+  margin: 3% auto 0px auto;
+  max-width: 900px;
   .explorer {
     display: flex;
     flex-direction: column;
-    padding: 10px;
-    color: @font;
-    border: 1px solid @border;
+    height: 600px;
+    background-color: @background;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5); 
     border-radius: 3px;
     .list-header {
       display: flex;
+      background-color: #222222;
       .path {
+        color: @font;
         flex-grow: 1;
-        margin: auto 0px;
+        margin: auto 10px;
         text-align: start;
       }
       .control-buttons {
         flex-grow: 0;
         .control-button {
           background: transparent;
-          margin: 10px 0px 10px 10px;
+          margin: 10px 5px 10px 5px;
+          &:last-child {
+            margin-right: 10;
+          }
         }
       }
     }
     .main {
       display: flex;
+      height: 100%;
+      padding: 10px 0px;
       font-size: 20px;
-      border: 1px solid @border;
+      background-color: #121212;
+
       .navbar {
         flex-grow: 0;
-        padding: 15px;
+        width: 200px;
+        padding: 0px 15px;
         border-right: 1px solid @border;
+        .accordeon-title {
+          margin: 5px 0px;
+          color: @font-weak;
+          transition: all 0.2s ease-out;
+          &.active {
+            color: @font;
+          }
+          &:hover {
+            color: @font;
+          }
+        }
         .file-title {
+          margin: 5px 0px;
           text-align: start;
+          color: @font-weak;
+          transition: all 0.2s ease-out;
+          &.active {
+            color: @font;
+          }
+          &:hover {
+            color: @font;
+          }
         }
         .accordeon {
           display: flex;
           flex-direction: column;
           .accordeon-head {
             display: flex;
+            cursor: pointer;
             .dropdown-button {
               background-color: transparent;
+              cursor: pointer;
               .dropdown-icon {
                 width: 20px;
                 height: 20px;
@@ -68,22 +101,33 @@
           .folder-list-el {
             display: flex;
             padding: 5px 15px;
-            margin: auto;
+            margin: 12.5px 10px;
+            font-size: 20px;
+            transition: all 0.2s ease-out;
             &:last-child {
               border-bottom: none;
             }
             .el-icon {
               flex-grow: 0;
-              margin: auto 10px auto 0px;
+              margin: auto 25px auto 0px;
               width: 25px;
               height: 25px;
             }
             .el-name {
-              flex-grow: 1;
+              flex-grow: 0;
+              color: @font-weak;
+              cursor: pointer;
               text-align: start;
+              &.active {
+                color: @font;
+              }
+              &:hover {
+                color: @font;
+              }
             }
             .el-capacity {
-              flex-grow: 0;
+              flex-grow: 1;
+              text-align: end;
               font-size: 75%;
               margin: auto;
               color: @font-weak;

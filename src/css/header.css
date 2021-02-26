@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   padding: 15px;
+  margin-top: 50px;
 }
 .header .logo-box {
   margin-right: 25px;
@@ -16,7 +17,7 @@
 .header .locations .location {
   cursor: pointer;
   background-color: transparent;
-  color: #ADADAD;
+  color: #747474;
   font-size: 20px;
   padding: 5px 7.5px;
   margin: auto 5px;
@@ -27,6 +28,6 @@
   color: #FFFFFF;
 }
 .header .locations .location.active {
-  color: #212121;
+  color: #202020;
   background-color: #FFFFFF;
 }

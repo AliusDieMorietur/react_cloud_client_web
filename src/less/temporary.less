@@ -1,12 +1,9 @@
 // out: ../css/temporary.css
 
-@background: #212121;
-@font: #FFFFFF;
-@border: #ADADAD;
-@error: #E62737;
+@import "colors.less";
 
 .temporary {
-  margin-top: 55%;
+  margin: 10% auto;
   color: @font;
   .tabs {
     display: flex;
@@ -15,7 +12,7 @@
     .tab-btn {
       cursor: pointer;
       background-color: transparent;
-      color: @border;
+      color: @font-weak;
       font-size: 25px;
       padding: 5px 7.5px;
       // margin: 0px auto;
@@ -46,6 +43,12 @@
     .tab {
       display: flex;
       flex-direction: column;
+
+      .form-token {
+        font-size: 20px;
+        user-select: text;
+      }
+
       .form-title {
         text-align: center;
         font-size: 20px;
