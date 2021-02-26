@@ -62,8 +62,10 @@ export default class Permanent extends React.Component {
 
     super(props);
 		this.state = {
-      currentPath: "home/",
-      favouritePaths: []
+      currentPath: "",
+      favourites: [{ path: "", name: "home" }],
+      selected: [],
+      selectState: false,
     };
 
     this.buffers = [];
@@ -82,23 +84,53 @@ export default class Permanent extends React.Component {
             <div className="list-header">
               <div className="path">{ "/" + this.state.currentPath.slice(0, -1) }</div>
               <div className="control-buttons">
-                <button className="control-button"><img src={ `${process.env.PUBLIC_URL}/upload.svg` } /></button>
-                <button className="control-button"><img src={ `${process.env.PUBLIC_URL}/download.svg` } /></button>
-                <button className="control-button"><img src={ `${process.env.PUBLIC_URL}/delete.svg` } /></button>
+                <button className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"} onClick={() => {
+                  this.setState({ favourites: [...this.state.favourites, ...this.state.selected.map( x => ({ name: x, path: x }) )] })
+                }}>
+                  <img src={ `${process.env.PUBLIC_URL}/icons/bookmark.svg` } alt="Bookmark"/>
+                </button>
+                <button className="active control-button"><img src={ `${process.env.PUBLIC_URL}/icons/upload.svg` }   alt="Upload"  /></button>
+                <button className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"}>       
+                  <img src={ `${process.env.PUBLIC_URL}/icons/download.svg` } alt="Download"/>
+                </button>
+                <button className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"}>       
+                  <img src={ `${process.env.PUBLIC_URL}/icons/delete.svg` } alt="Delete"/>
+                </button>
               </div>
             </div>
             <div className="main">
               <div className="navbar">
+                <div className="favourites">
+                  { this.state.favourites.map((item, index) => <div className="favourites-title" key={index} 
+                    onClick = { () => this.setState({ currentPath: item.path, selected: [], selectState: false }) }
+                  >
+                    { item.name }
+                  </div>) }
+                </div>
                 <Accordeon dataset={ dataset } onItemClick={(item, path) => {
                   if (item.childs !== null)
-                    this.setState({ currentPath: `${path}${item.name}/` })
+                    this.setState({ currentPath: `${path}${item.name}/`, selected: [], selectState: false })
                 }}/>
               </div>
               <div className="hierarchy">
-                <PathList dataset = { generateListFromPath(this.state.currentPath.split("/"), dataset) } onItemClick={item => {
-                  if (item.childs !== null) {
-                    this.setState({ currentPath: `${this.state.currentPath}${item.name}/` })
+                <PathList dataset = { generateListFromPath(this.state.currentPath.split("/"), dataset) } active={this.state.selected} 
+                onItemClick={item => {
+                  if (this.state.selectState) {
+                    if (!this.state.selected.includes(item.name)) 
+                      this.state.selected.push(item.name);
+                    else {
+                      const index = this.state.selected.indexOf(item.name);
 
+                      this.state.selected.splice(index, 1);
+                    }
+                    this.forceUpdate();
+
+                    if (this.state.selected.length === 0) this.setState({ selectState: false });
+                  } else if (item.childs !== null) this.setState({ currentPath: `${this.state.currentPath}${item.name}/` })
+                }} 
+                onItemHold={item => {
+                  if (!this.state.selectState) {
+                    this.setState({ selectState: true });
                   }
                 }}/>
               </div>

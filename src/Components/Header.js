@@ -10,7 +10,7 @@ class Header extends React.Component {
 	render() {
 		return  <div className="header">
               <div className="logo-box">
-							  <img className="logo" src={process.env.PUBLIC_URL + '/logo.svg'} alt=""/>
+							  <img className="logo" src={process.env.PUBLIC_URL + '/icons/logo.svg'} alt=""/>
               </div>
               <div className="locations">
                 <Link 

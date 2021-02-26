@@ -35,7 +35,7 @@ export default class Accordeon extends React.Component {
                     iconRef.current.classList.toggle('active');
                     this.forceUpdate();
                   }}>
-                  <img src={ `${process.env.PUBLIC_URL}/arrow.svg` } ref={ iconRef } />
+                  <img src={ `${process.env.PUBLIC_URL}/icons/arrow.svg`  } alt="Dropdown" ref={ iconRef } />
                 </button>
               </div>
               <div className="accordeon-body" style={{ marginLeft: '16px' }} ref={ bodyRef }> 

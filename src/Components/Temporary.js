@@ -46,6 +46,7 @@ export default class Temporary extends React.Component {
 
   fileUploadChange(event) {
     const chosen = [];
+    
     for (const file of event.target.files) { chosen.push(file.name); };
     this.setState({ files: event.target.files, chosen });
   }
@@ -60,7 +61,9 @@ export default class Temporary extends React.Component {
       return;
     };
     this.setState({ token: 'loading...' });
+
     const list = [];
+
     for (const file of this.state.files) list.push(file.name);
     for (const file of this.state.files) await this.transport.bufferCall(file);
     this.transport.socketCall('tmpUpload', { list })

@@ -11,22 +11,40 @@
     background-color: @background;
     box-shadow: 0 0 10px rgba(0,0,0,0.5); 
     border-radius: 3px;
+    font-weight: 400;
+
     .list-header {
       display: flex;
       background-color: #222222;
       .path {
         color: @font;
         flex-grow: 1;
-        margin: auto 10px;
+        margin: auto 15px;
         text-align: start;
+        font-size: 22px;
       }
       .control-buttons {
         flex-grow: 0;
         .control-button {
           background: transparent;
           margin: 10px 5px 10px 5px;
+          cursor: pointer;
+          img {
+            filter: invert(0.7);
+            transition: all 0.2s ease-out;
+          }
           &:last-child {
-            margin-right: 10;
+            margin-right: 5px;
+          }
+          &.active {
+            img {
+              filter: invert(0.5);
+            }
+            &:hover {
+              img {
+                filter: invert(0.0);
+              }
+            }
           }
         }
       }
@@ -36,13 +54,30 @@
       height: 100%;
       padding: 10px 0px;
       font-size: 20px;
-      background-color: #121212;
+      background-color: @secondary;
 
       .navbar {
         flex-grow: 0;
         width: 200px;
         padding: 0px 15px;
         border-right: 1px solid @border;
+        overflow-y: scroll;
+        .favourites {
+          border-bottom: 1px solid @border;
+          margin-bottom: 5px;
+          padding-bottom: 5px;
+          .favourites-title {
+            padding: 5px 0px;
+            color: @font-weak;
+            transition: all 0.2s ease-out;
+            &.active {
+              color: @font;
+            }
+            &:hover {
+              color: @font;
+            }
+          }
+        }
         .accordeon-title {
           margin: 5px 0px;
           color: @font-weak;
@@ -55,7 +90,7 @@
           }
         }
         .file-title {
-          margin: 5px 0px;
+          padding: 5px 0px;
           text-align: start;
           color: @font-weak;
           transition: all 0.2s ease-out;
@@ -100,12 +135,22 @@
           margin: 0px 10px 0px 0px;
           .folder-list-el {
             display: flex;
-            padding: 5px 15px;
-            margin: 12.5px 10px;
+            padding: 6px 15px;
+            margin: 1px 0px 0px 10px;
+            border-radius: 3px;
             font-size: 20px;
-            transition: all 0.2s ease-out;
             &:last-child {
               border-bottom: none;
+            }
+            transition: all 0.2s ease-out;
+            &.active {
+              background: @primary;
+              &:hover {
+                background: @primary-light;
+              }
+            }
+            &:hover {
+              background: @primary;
             }
             .el-icon {
               flex-grow: 0;
@@ -118,12 +163,6 @@
               color: @font-weak;
               cursor: pointer;
               text-align: start;
-              &.active {
-                color: @font;
-              }
-              &:hover {
-                color: @font;
-              }
             }
             .el-capacity {
               flex-grow: 1;

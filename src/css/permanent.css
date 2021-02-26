@@ -9,16 +9,18 @@
   background-color: #202020;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border-radius: 3px;
+  font-weight: 400;
 }
 .permanent .explorer .list-header {
   display: flex;
   background-color: #222222;
 }
 .permanent .explorer .list-header .path {
-  color: #FFFFFF;
+  color: #ddd;
   flex-grow: 1;
-  margin: auto 10px;
+  margin: auto 15px;
   text-align: start;
+  font-size: 22px;
 }
 .permanent .explorer .list-header .control-buttons {
   flex-grow: 0;
@@ -26,9 +28,20 @@
 .permanent .explorer .list-header .control-buttons .control-button {
   background: transparent;
   margin: 10px 5px 10px 5px;
+  cursor: pointer;
+}
+.permanent .explorer .list-header .control-buttons .control-button img {
+  filter: invert(0.7);
+  transition: all 0.2s ease-out;
 }
 .permanent .explorer .list-header .control-buttons .control-button:last-child {
-  margin-right: 10;
+  margin-right: 5px;
+}
+.permanent .explorer .list-header .control-buttons .control-button.active img {
+  filter: invert(0.5);
+}
+.permanent .explorer .list-header .control-buttons .control-button.active:hover img {
+  filter: invert(0);
 }
 .permanent .explorer .main {
   display: flex;
@@ -42,6 +55,23 @@
   width: 200px;
   padding: 0px 15px;
   border-right: 1px solid #747474;
+  overflow-y: scroll;
+}
+.permanent .explorer .main .navbar .favourites {
+  border-bottom: 1px solid #747474;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+}
+.permanent .explorer .main .navbar .favourites .favourites-title {
+  padding: 5px 0px;
+  color: #747474;
+  transition: all 0.2s ease-out;
+}
+.permanent .explorer .main .navbar .favourites .favourites-title.active {
+  color: #ddd;
+}
+.permanent .explorer .main .navbar .favourites .favourites-title:hover {
+  color: #ddd;
 }
 .permanent .explorer .main .navbar .accordeon-title {
   margin: 5px 0px;
@@ -49,22 +79,22 @@
   transition: all 0.2s ease-out;
 }
 .permanent .explorer .main .navbar .accordeon-title.active {
-  color: #FFFFFF;
+  color: #ddd;
 }
 .permanent .explorer .main .navbar .accordeon-title:hover {
-  color: #FFFFFF;
+  color: #ddd;
 }
 .permanent .explorer .main .navbar .file-title {
-  margin: 5px 0px;
+  padding: 5px 0px;
   text-align: start;
   color: #747474;
   transition: all 0.2s ease-out;
 }
 .permanent .explorer .main .navbar .file-title.active {
-  color: #FFFFFF;
+  color: #ddd;
 }
 .permanent .explorer .main .navbar .file-title:hover {
-  color: #FFFFFF;
+  color: #ddd;
 }
 .permanent .explorer .main .navbar .accordeon {
   display: flex;
@@ -101,13 +131,23 @@
 }
 .permanent .explorer .main .hierarchy .current-folder-list .folder-list-el {
   display: flex;
-  padding: 5px 15px;
-  margin: 12.5px 10px;
+  padding: 6px 15px;
+  margin: 1px 0px 0px 10px;
+  border-radius: 3px;
   font-size: 20px;
   transition: all 0.2s ease-out;
 }
 .permanent .explorer .main .hierarchy .current-folder-list .folder-list-el:last-child {
   border-bottom: none;
+}
+.permanent .explorer .main .hierarchy .current-folder-list .folder-list-el.active {
+  background: #202020;
+}
+.permanent .explorer .main .hierarchy .current-folder-list .folder-list-el.active:hover {
+  background: #292929;
+}
+.permanent .explorer .main .hierarchy .current-folder-list .folder-list-el:hover {
+  background: #202020;
 }
 .permanent .explorer .main .hierarchy .current-folder-list .folder-list-el .el-icon {
   flex-grow: 0;
@@ -120,12 +160,6 @@
   color: #747474;
   cursor: pointer;
   text-align: start;
-}
-.permanent .explorer .main .hierarchy .current-folder-list .folder-list-el .el-name.active {
-  color: #FFFFFF;
-}
-.permanent .explorer .main .hierarchy .current-folder-list .folder-list-el .el-name:hover {
-  color: #FFFFFF;
 }
 .permanent .explorer .main .hierarchy .current-folder-list .folder-list-el .el-capacity {
   flex-grow: 1;
