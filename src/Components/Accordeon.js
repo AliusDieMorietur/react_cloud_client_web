@@ -38,7 +38,7 @@ export default class Accordeon extends React.Component {
                   <img src={ `${process.env.PUBLIC_URL}/arrow.svg` } ref={ iconRef } />
                 </button>
               </div>
-              <div className="accordeon-body" style={{ marginLeft: '15px' }} ref={ bodyRef }> 
+              <div className="accordeon-body" style={{ marginLeft: '16px' }} ref={ bodyRef }> 
                 { toAccaredon(item.childs, `${path}${item.name}/`) }
               </div>
             </div>

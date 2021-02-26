@@ -1,6 +1,6 @@
 export default class Transport {
-  constructor(host, bufferConstruct) {
-    this.socket = new WebSocket('ws://' + host);
+  constructor(bufferConstruct) {
+    this.socket = new WebSocket('ws://' + window.location.host);
     this.callId = 0;
     this.calls = new Map();
     this.socket.addEventListener('message', ({ data }) => {

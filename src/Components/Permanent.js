@@ -1,9 +1,10 @@
 import React from 'react';
 import Header from './Header';
+import Transport from '../additional/socket'
 import Accordeon from './Accordeon';
 import PathList from './PathList';
 
-const dataset = [
+let dataset = [
   { name: 'folder1', childs: [
     { name: 'file3', childs: null, capacity: 1234 },
     { name: 'folder2', childs: [
@@ -11,7 +12,7 @@ const dataset = [
       { name: 'file5', childs: null, capacity: 1234 }
     ], capacity: 1234 }
   ], capacity: 1234 }, 
-  { name: 'falder6', childs: [
+  { name: 'folder6', childs: [
     { name: 'file7', childs: null, capacity: 1234 }
   ], capacity: 1234 },  
   { name: 'file11', childs: null, capacity: 1234 },
@@ -53,43 +54,58 @@ export default class Permanent extends React.Component {
     };
     dataset.sort(comparator);
 
+    // dataset = [{ 
+    //   name: 'home', 
+    //   childs: dataset, 
+    //   capacity: dataset.reduce((acc, cur) => acc + cur.capacity, 0) 
+    // }]
+
     super(props);
 		this.state = {
-      currentPath: "",
+      currentPath: "home/",
       favouritePaths: []
     };
+
+    this.buffers = [];
+    this.transport = new Transport(buffer => {
+      this.buffers.push(buffer);
+    });
 	}
 
 	render() {
-		return 	<div className="permanent">
-							<Header/>
-							<div className="explorer">
-								<div className="list-header">
-                  <div className="path">{ "/" + this.state.currentPath.slice(0, -1) }</div>
-                  <div className="control-buttons">
-                    <button className="control-button"><img src={ `${process.env.PUBLIC_URL}/upload.svg` } /></button>
-                    <button className="control-button"><img src={ `${process.env.PUBLIC_URL}/download.svg` } /></button>
-                    <button className="control-button"><img src={ `${process.env.PUBLIC_URL}/delete.svg` } /></button>
-                  </div>
-                </div>
-                <div className="main">
-                  <div className="navbar">
-                    
-                    <Accordeon dataset={ dataset } onItemClick={(item, path) => {
-                      if (item.childs !== null)
-                        this.setState({ currentPath: `${path}${item.name}/` })
-                    }}/>
-                  </div>
-                  <div className="hierarchy">
-                    <PathList dataset = { generateListFromPath(this.state.currentPath.split("/"), dataset) } onItemClick={item => {
-                      if (item.childs !== null) {
-                        this.setState({ currentPath: `${this.state.currentPath}${item.name}/` })
 
-                      }
-                    }}/>
-                  </div>
-                </div>
-							</div>
-						</div>
+		return (
+      <div>
+        <Header/>
+        <div className="permanent">
+          <div className="explorer">
+            <div className="list-header">
+              <div className="path">{ "/" + this.state.currentPath.slice(0, -1) }</div>
+              <div className="control-buttons">
+                <button className="control-button"><img src={ `${process.env.PUBLIC_URL}/upload.svg` } /></button>
+                <button className="control-button"><img src={ `${process.env.PUBLIC_URL}/download.svg` } /></button>
+                <button className="control-button"><img src={ `${process.env.PUBLIC_URL}/delete.svg` } /></button>
+              </div>
+            </div>
+            <div className="main">
+              <div className="navbar">
+                <Accordeon dataset={ dataset } onItemClick={(item, path) => {
+                  if (item.childs !== null)
+                    this.setState({ currentPath: `${path}${item.name}/` })
+                }}/>
+              </div>
+              <div className="hierarchy">
+                <PathList dataset = { generateListFromPath(this.state.currentPath.split("/"), dataset) } onItemClick={item => {
+                  if (item.childs !== null) {
+                    this.setState({ currentPath: `${this.state.currentPath}${item.name}/` })
+
+                  }
+                }}/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>	
+    );
 	}
 }

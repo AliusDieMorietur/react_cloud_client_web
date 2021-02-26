@@ -1,7 +1,6 @@
 import React from 'react';
 import Transport from '../additional/socket'
-import Tab from './Tabulator'
-import RoutedHeader from './Header';
+import Header from './Header';
 
 const downloadFile = (name, dataBlob) => {
   const blobUrl = window.URL.createObjectURL(dataBlob);
@@ -26,10 +25,9 @@ export default class Temporary extends React.Component {
       input: '',
       error: ''
     };
-
     this.timer = null;
     this.buffers = [];
-    this.transport = new Transport(window.location.host, buffer => {
+    this.transport = new Transport(buffer => {
       this.buffers.push(buffer);
     });
 
@@ -142,8 +140,8 @@ export default class Temporary extends React.Component {
       </div>;
 
     return (
-      <div>
-        <RoutedHeader/>
+      <div> 
+        <Header/>
         <div className="temporary">
           <div className="tabs">
             <button
