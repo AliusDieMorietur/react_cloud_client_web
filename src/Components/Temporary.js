@@ -27,9 +27,7 @@ export default class Temporary extends React.Component {
     };
     this.timer = null;
     this.buffers = [];
-    this.transport = new Transport(buffer => {
-      this.buffers.push(buffer);
-    });
+    this.transport = this.props.transport;
 
     for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
       if (!["constructor", "render"].includes(key)) {
@@ -62,11 +60,11 @@ export default class Temporary extends React.Component {
     };
     this.setState({ token: 'loading...' });
 
-    const list = [];
+    const fileList = [];
 
-    for (const file of this.state.files) list.push(file.name);
+    for (const file of this.state.files) fileList.push(file.name);
     for (const file of this.state.files) await this.transport.bufferCall(file);
-    this.transport.socketCall('tmpUpload', { list })
+    this.transport.socketCall('upload', { storageName: 'tmp', fileList })
       .then(token => this.setState({ 
         token, 
         files: [], 
@@ -81,23 +79,26 @@ export default class Temporary extends React.Component {
       this.showError(new Error('Enter valid token please'));
       return;
     };
-    this.transport.socketCall('tmpAvailableFiles', { token: this.state.input  })
+    this.transport.socketCall('availableFiles', { storageName: 'tmp', token: this.state.input  })
       .then(availableFiles => this.setState({ availableFiles }))
       .catch(this.showError);
   }
 
   download(event) {
-    const files = event.target.innerText === 'Download All'
+    const fileList = event.target.innerText === 'Download All'
       ? this.state.availableFiles
       : [event.target.innerText]
-    this.transport.socketCall('tmpDownload', { 
+    this.transport.socketCall('download', { 
+      storageName: 'tmp',
       token: this.state.input.trim(), 
-      files
+      fileList
     })
     .then(files => { 
+      const buffers = this.transport.getBuffers();
+
       for (let i = 0; i < files.length; i++) 
-        downloadFile(files[i], this.buffers[i]); 
-      this.buffers = [];
+        downloadFile(files[i], buffers[i]); 
+      this.transport.clearBuffers();
     })
     .catch(this.showError);
   }

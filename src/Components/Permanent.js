@@ -69,9 +69,7 @@ export default class Permanent extends React.Component {
     };
 
     this.buffers = [];
-    this.transport = new Transport(buffer => {
-      this.buffers.push(buffer);
-    });
+    this.transport = this.props.transport;
 	}
 
 	render() {
