@@ -6,24 +6,27 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  margin-top: -150px;
-  margin-left: -250px;
   width: 500px;
   height: 300px;
+  margin-top: -150px;
+  margin-left: -250px;
   display: flex;
   flex-direction: column;
+
   .form-title {
     text-align: center;
     margin-bottom: 15px;
     font-size: 40px;
     color: @font;
   }
+
   .form-token {
     margin-bottom: 15px;
     font-size: 40px;
     color: @font;
     user-select: text;
   }
+
   .form-field {
     width: 225px;
     margin: 10px auto;
@@ -34,6 +37,7 @@
     border: 1px solid @font;
     border-radius: 5px;
   }
+
   .form-button {
     margin: 10px auto;
     padding: 5px 7.5px;
@@ -48,6 +52,13 @@
       color: @background;
       background-color: @font;
     }
+  }
+
+  .error-box {
+    color: @error;
+    text-align: center;
+    font-size: 20px;
+    margin: 20px 0px 10px 0px;
   }
 }
 

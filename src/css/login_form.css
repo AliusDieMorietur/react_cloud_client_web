@@ -2,10 +2,10 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  margin-top: -150px;
-  margin-left: -250px;
   width: 500px;
   height: 300px;
+  margin-top: -150px;
+  margin-left: -250px;
   display: flex;
   flex-direction: column;
 }
@@ -13,12 +13,12 @@
   text-align: center;
   margin-bottom: 15px;
   font-size: 40px;
-  color: #FFFFFF;
+  color: #ddd;
 }
 .login-form .form-token {
   margin-bottom: 15px;
   font-size: 40px;
-  color: #FFFFFF;
+  color: #ddd;
   user-select: text;
 }
 .login-form .form-field {
@@ -26,23 +26,29 @@
   margin: 10px auto;
   padding: 5px 7.5px;
   font-size: 17px;
-  color: #FFFFFF;
+  color: #ddd;
   background-color: #202020;
-  border: 1px solid #FFFFFF;
+  border: 1px solid #ddd;
   border-radius: 5px;
 }
 .login-form .form-button {
   margin: 10px auto;
   padding: 5px 7.5px;
   font-size: 20px;
-  color: #FFFFFF;
+  color: #ddd;
   background-color: #202020;
-  border: 1px solid #FFFFFF;
+  border: 1px solid #ddd;
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.2s ease-out;
 }
 .login-form .form-button:hover {
   color: #202020;
-  background-color: #FFFFFF;
+  background-color: #ddd;
+}
+.login-form .error-box {
+  color: #E62737;
+  text-align: center;
+  font-size: 20px;
+  margin: 20px 0px 10px 0px;
 }
