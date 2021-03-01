@@ -12,7 +12,7 @@ export default class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-      authed: true
+      authed: false
     };
     this.transport = new Transport();
 	}
@@ -42,13 +42,14 @@ export default class App extends React.Component {
             />
             <PrivateRoute 
               authed={this.state.authed} 
+              transport={this.transport}
               redirect='/login'
               path='/permanent' 
               component={Permanent} 
             />
             <Route 
               exact path='/temporary' 
-              render={() => <Temporary />} 
+              render={() => <Temporary transport={this.transport}/>} 
             />
             {/* <PrivateRoute 
               authed={this.state.authed} 
@@ -59,6 +60,11 @@ export default class App extends React.Component {
             /> */}
             <PrivateRoute 
               authed={!this.state.authed} 
+              transport={this.transport}
+              callback={ token => { 
+                localStorage.setItem('token', token);
+                this.setState({ authed: true }); 
+              } }
               redirect='/permanent'
               path='/login' 
               component={LoginForm} 
