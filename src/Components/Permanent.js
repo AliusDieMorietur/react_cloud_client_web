@@ -4,64 +4,48 @@ import Transport from '../additional/socket'
 import Accordeon from './Accordeon';
 import PathList from './PathList';
 
-let dataset = [
-  { name: 'folder1', childs: [
-    { name: 'file3', childs: null, capacity: 1234 },
-    { name: 'folder2', childs: [
-      { name: 'file4', childs: null, capacity: 1234 },
-      { name: 'file5', childs: null, capacity: 1234 }
-    ], capacity: 1234 }
-  ], capacity: 1234 }, 
-  { name: 'folder6', childs: [
-    { name: 'file7', childs: null, capacity: 1234 }
-  ], capacity: 1234 },  
-  { name: 'file11', childs: null, capacity: 1234 },
-  { name: 'folder8', childs: [
-    { name: 'file9', childs: null, capacity: 1234 }
-  ], capacity: 1234 },  
-  { name: 'file10', childs: null, capacity: 1234 }
-];
+// let dataset = [
+//   { name: 'folder1', childs: [
+//     { name: 'file3', childs: null, capacity: 1234 },
+//     { name: 'folder2', childs: [
+//       { name: 'file4', childs: null, capacity: 1234 },
+//       { name: 'file5', childs: null, capacity: 1234 }
+//     ], capacity: 1234 }
+//   ], capacity: 1234 }, 
+//   { name: 'folder6', childs: [
+//     { name: 'file7', childs: null, capacity: 1234 }
+//   ], capacity: 1234 },  
+//   { name: 'file11', childs: null, capacity: 1234 },
+//   { name: 'folder8', childs: [
+//     { name: 'file9', childs: null, capacity: 1234 }
+//   ], capacity: 1234 },  
+//   { name: 'file10', childs: null, capacity: 1234 }
+// ];
 
-const generateListFromPath = (path, dataset) => {
-  const dir = path.shift();
 
-  for (const item of dataset) {
-    if(item.name === dir) {
-      return generateListFromPath(path, item.childs)
-    }
+
+const comparator = (a, b) => {
+  const is_a_folder = a.childs !== null;
+  const is_b_folder = b.childs !== null;
+
+  if(is_a_folder) a.childs.sort(comparator);
+  if(is_b_folder) b.childs.sort(comparator);
+
+  if (is_a_folder === is_b_folder) {
+    if (a.name < b.name) return -1;
+    else if (a.name === b.name) return 0;
+    else return 1;
+  } else {
+    if (is_a_folder) return -1;
+    else return 1;
   }
-
-  return dataset;
-}
+};
 
 export default class Permanent extends React.Component {
 	constructor(props) {
-    const comparator = (a, b) => {
-      const is_a_folder = a.childs !== null;
-      const is_b_folder = b.childs !== null;
-
-      if(is_a_folder) a.childs.sort(comparator);
-      if(is_b_folder) b.childs.sort(comparator);
-
-      if (is_a_folder === is_b_folder) {
-        if (a.name < b.name) return -1;
-        else if (a.name === b.name) return 0;
-        else return 1;
-      } else {
-        if (is_a_folder) return -1;
-        else return 1;
-      }
-    };
-    dataset.sort(comparator);
-
-    // dataset = [{ 
-    //   name: 'home', 
-    //   childs: dataset, 
-    //   capacity: dataset.reduce((acc, cur) => acc + cur.capacity, 0) 
-    // }]
-
     super(props);
 		this.state = {
+      dataset: [],
       currentPath: "",
       favourites: [{ path: "", name: "home" }],
       selected: [],
@@ -72,8 +56,13 @@ export default class Permanent extends React.Component {
     this.transport = this.props.transport;
 	}
 
-	render() {
+  async componentDidMount() {
+    const dataset = await this.transport.socketCall('getStorageStructure');
+    dataset.sort(comparator);
+    this.setState({ dataset });
+  }
 
+	render() {
 		return (
       <div>
         <Header/>
@@ -105,13 +94,13 @@ export default class Permanent extends React.Component {
                     { item.name }
                   </div>) }
                 </div>
-                <Accordeon dataset={ dataset } onItemClick={(item, path) => {
+                <Accordeon dataset={ this.state.dataset } onItemClick={(item, path) => {
                   if (item.childs !== null)
                     this.setState({ currentPath: `${path}${item.name}/`, selected: [], selectState: false })
                 }}/>
               </div>
               <div className="hierarchy">
-                <PathList dataset = { generateListFromPath(this.state.currentPath.split("/"), dataset) } active={this.state.selected} 
+                <PathList currentPath= { this.state.currentPath } dataset = { this.state.dataset } active={this.state.selected} 
                 onItemClick={item => {
                   if (this.state.selectState) {
                     if (!this.state.selected.includes(item.name)) 
