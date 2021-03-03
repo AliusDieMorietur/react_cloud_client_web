@@ -3,20 +3,7 @@ import React from 'react';
 export default class Accordeon extends React.Component {
 	constructor(props) {
     super(props);
-    
-    const fn = item => {
-      item.state = false;
-      if (item.childs !== null) item.childs.map(fn);
-
-      return item;
-
-      // if (item.childs !== null) return { state: false, childs: item.childs.map(fn) }
-      // else return { state: false, childs: null }
-    }
-
-		this.state = {
-      dataset: props.dataset.map(fn)
-    };
+		this.state = {};
 	}
 
 	render() {
@@ -46,6 +33,6 @@ export default class Accordeon extends React.Component {
       });
       return res;
     };
-    return toAccaredon(this.state.dataset);
+    return toAccaredon(this.props.dataset);
 	}
 }

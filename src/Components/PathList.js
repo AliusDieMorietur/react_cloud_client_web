@@ -1,14 +1,24 @@
-
-
 import React from 'react';
 
+const generateListFromPath = (path, dataset) => {
+  const dir = path.shift();
+
+  for (const item of dataset) {
+    if(item.name === dir) {
+      return generateListFromPath(path, item.childs)
+    }
+  }
+
+  return dataset;
+}
+
 const convert = sizeInBytes => {
-  const units = ['b', "Kb", "Mb", "Gb", "Tb"];
+  const units = ['b', 'Kb', 'Mb', 'Gb', 'Tb'];
   const index = Math.floor(Math.log10(sizeInBytes) / 3);
   const unit = units[index];
   const res = sizeInBytes / Math.pow(10, index * 3);
 
-  return `${res} ${unit}`
+  return `${res ? res : 0} ${unit ? unit : units[0]}`
 }
 
 export default class PathList extends React.Component {
@@ -21,7 +31,8 @@ export default class PathList extends React.Component {
 
 	render() {
     return <ul className="current-folder-list"> { 
-      this.props.dataset.map((item, index) =>  {
+      generateListFromPath(this.props.currentPath.split("/"), this.props.dataset)
+        .map((item, index) =>  {
         const imgSrc = item.childs === null
           ? `${process.env.PUBLIC_URL}/icons/file.svg`
           : `${process.env.PUBLIC_URL}/icons/folder.svg`;
