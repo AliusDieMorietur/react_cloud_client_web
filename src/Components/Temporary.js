@@ -1,5 +1,4 @@
 import React from 'react';
-import Transport from '../additional/socket'
 import Header from './Header';
 
 const downloadFile = (name, dataBlob) => {
