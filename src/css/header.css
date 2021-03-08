@@ -25,9 +25,9 @@
   transition: all 0.2s ease-out;
 }
 .header .locations .location:hover {
-  color: #FFFFFF;
+  color: #ddd;
 }
 .header .locations .location.active {
   color: #202020;
-  background-color: #FFFFFF;
+  background-color: #ddd;
 }
