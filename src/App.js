@@ -22,7 +22,9 @@ export default class App extends React.Component {
     if (token) {
       const authed = await this.transport.socketCall('restoreSession', { token });
       console.log(authed);
-      if (authed) this.setState({ authed: true });
+      if (authed) { 
+        this.setState({ authed: true });
+      }
     }
   }
 
@@ -41,7 +43,7 @@ export default class App extends React.Component {
               }}
             />
             <PrivateRoute 
-              authed={this.state.authed} 
+              authed={ this.state.authed }
               transport={this.transport}
               redirect='/login'
               path='/permanent' 
@@ -64,7 +66,7 @@ export default class App extends React.Component {
               callback={ token => { 
                 localStorage.setItem('token', token);
                 this.setState({ authed: true }); 
-              } }
+              }}
               redirect='/permanent'
               path='/login' 
               component={LoginForm} 
