@@ -16,6 +16,7 @@
 
     .list-header {
       display: flex;
+      padding: 10px 0px;
       background-color: #222222;
       .path {
         color: @font;
@@ -26,9 +27,12 @@
       }
       .control-buttons {
         flex-grow: 0;
+        display: flex;
         .control-button {
+          display: block;
           background: transparent;
-          margin: 10px 5px 10px 5px;
+          margin: auto 5px;
+          padding: 0px 7.5px;
           cursor: pointer;
           img {
             filter: invert(0.7);
@@ -60,9 +64,10 @@
       .navbar {
         flex-grow: 0;
         width: 200px;
-        padding: 0px 15px;
+        padding: 0px 5px 0px 15px; //why
         border-right: 1px solid @border;
         overflow-y: scroll;
+        overflow-x: hidden;
         .favourites {
           border-bottom: 1px solid @border;
           margin-bottom: 5px;
@@ -95,6 +100,8 @@
           text-align: start;
           color: @font-weak;
           transition: all 0.2s ease-out;
+          overflow-x: hidden;
+          white-space: nowrap;
           &.active {
             color: @font;
           }

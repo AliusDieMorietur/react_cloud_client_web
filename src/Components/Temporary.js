@@ -87,7 +87,7 @@ export default class Temporary extends React.Component {
     const fileList = event.target.innerText === 'Download All'
       ? this.state.availableFiles
       : [event.target.innerText]
-    this.transport.socketCall('download', { 
+    this.transport.socketCall('tmpDownload', { 
       storageName: 'tmp',
       token: this.state.input.trim(), 
       fileList
@@ -122,7 +122,15 @@ export default class Temporary extends React.Component {
         <input id="files" type="file" value = { this.state.value } onChange = { this.fileUploadChange  } multiple/>
         { 
           this.state.token !== '' 
-            ? <h1 className="form-token ">Your token: {this.state.token}</h1> 
+            ? <h1 className="form-token ">Your token: {this.state.token}<button className="active control-button" onClick={() => {
+              window.navigator
+                .clipboard
+                .writeText(this.state.token)
+                .then(() => { console.log("Copied!"); })
+                .catch(() => { console.log("Failed to copy!"); });
+            }}>
+                <img src={ `${process.env.PUBLIC_URL}/icons/copy.svg` } alt="copy"/>
+              </button></h1> 
             : '' 
         }
         <h1 className="form-title">Chosen:</h1>

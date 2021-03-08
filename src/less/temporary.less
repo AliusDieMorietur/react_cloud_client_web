@@ -34,6 +34,7 @@
     }
   }
 
+
   .available {
     display: flex;
     flex-direction: column;
@@ -48,6 +49,30 @@
         margin: auto;
         font-size: 20px;
         user-select: text;
+
+        .control-button {
+          background: transparent;
+          margin: auto 5px;
+          padding: 0px 7.5px;
+          cursor: pointer;
+          img {
+            filter: invert(0.7);
+            transition: all 0.2s ease-out;
+          }
+          &:last-child {
+            margin-right: 5px;
+          }
+          &.active {
+            img {
+              filter: invert(0.5);
+            }
+            &:hover {
+              img {
+                filter: invert(0.0);
+              }
+            }
+          }
+        }
       }
 
       .form-title {

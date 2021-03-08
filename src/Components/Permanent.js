@@ -4,24 +4,6 @@ import Accordeon from './Accordeon';
 import PathList from './PathList';
 import Modal from './Modal';
 
-// let dataset = [
-//   { name: 'folder1', childs: [
-//     { name: 'file3', childs: null, capacity: 1234 },
-//     { name: 'folder2', childs: [
-//       { name: 'file4', childs: null, capacity: 1234 },
-//       { name: 'file5', childs: null, capacity: 1234 }
-//     ], capacity: 1234 }
-//   ], capacity: 1234 }, 
-//   { name: 'folder6', childs: [
-//     { name: 'file7', childs: null, capacity: 1234 }
-//   ], capacity: 1234 },  
-//   { name: 'file11', childs: null, capacity: 1234 },
-//   { name: 'folder8', childs: [
-//     { name: 'file9', childs: null, capacity: 1234 }
-//   ], capacity: 1234 },  
-//   { name: 'file10', childs: null, capacity: 1234 }
-// ];
-
 const comparator = (a, b) => {
   const is_a_folder = a.childs !== null;
   const is_b_folder = b.childs !== null;
@@ -128,14 +110,25 @@ export default class Permanent extends React.Component {
                 multiple
               />
               <div className="control-buttons">
+                <button className={"active control-button"} onClick={() => {
+                  
+                }}>       
+                  <img src={ `${process.env.PUBLIC_URL}/icons/newfolder.svg` } alt="New Folder"/>
+                </button>
+                <label className="active control-button" htmlFor="files">
+                  <img src={ `${process.env.PUBLIC_URL}/icons/upload.svg` } alt="Upload"/>
+                </label>
                 <button className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"} onClick={() => {
-                  this.setState({ favourites: [...this.state.favourites, ...this.state.selected.map( x => ({ name: x, path: x }) )] })
+                  let favourites = [...this.state.favourites, ...this.state.selected.map( x => ({ name: x, path: x }) )];
+
+                  favourites = [...new Set(favourites)]; // make unique
+                  this.setState({ favourites })
                 }}>
                   <img src={ `${process.env.PUBLIC_URL}/icons/bookmark.svg` } alt="Bookmark"/>
                 </button>
-                <label className="active control-button"
-                  htmlFor="files"
-                ><img src={ `${process.env.PUBLIC_URL}/icons/upload.svg` }   alt="Upload"  /></label>
+                <button className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"}>       
+                  <img src={ `${process.env.PUBLIC_URL}/icons/link.svg` } alt="Link"/>
+                </button>
                 <button className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"}>       
                   <img src={ `${process.env.PUBLIC_URL}/icons/download.svg` } alt="Download"/>
                 </button>
