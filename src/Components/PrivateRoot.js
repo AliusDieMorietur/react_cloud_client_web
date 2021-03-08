@@ -12,7 +12,7 @@ export default function PrivateRoute ({
     <Route
       {...rest}
       render={(props) => authed === true
-        ? <Component transport={ transport } callback={callback} {...props}/>
+        ? <Component authed={ authed } transport={ transport } callback={callback} {...props}/>
         : <Redirect to={ redirect }/>
       }
     />

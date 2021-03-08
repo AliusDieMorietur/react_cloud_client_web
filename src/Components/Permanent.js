@@ -1,8 +1,8 @@
 import React from 'react';
 import Header from './Header';
-import Transport from '../additional/socket'
 import Accordeon from './Accordeon';
 import PathList from './PathList';
+import Modal from './Modal';
 
 // let dataset = [
 //   { name: 'folder1', childs: [
@@ -21,8 +21,6 @@ import PathList from './PathList';
 //   ], capacity: 1234 },  
 //   { name: 'file10', childs: null, capacity: 1234 }
 // ];
-
-
 
 const comparator = (a, b) => {
   const is_a_folder = a.childs !== null;
@@ -49,34 +47,95 @@ export default class Permanent extends React.Component {
       currentPath: "",
       favourites: [{ path: "", name: "home" }],
       selected: [],
-      selectState: false,
+      selectState: false
     };
 
     this.buffers = [];
     this.transport = this.props.transport;
+    this.transport.rebuildStructure = structure => {
+      console.log(structure);
+      this.setState({ dataset: structure.sort(comparator) });
+    };
+
+    // this.uploadModalContent = 
+    //   <div className="upload-modal-content">
+    //     <input id="files" type="file" value = { this.state.value } onChange = { this.fileUploadChange  } multiple/>
+    //     <div className="chosen">Chosen:</div>
+    //     <ul id="file-list">
+    //       { this.state.chosen.map((el, index) => <li key={index}>{ el }</li>) }
+    //     </ul>
+    //     <label id="choose-btn" htmlFor="files">Choose files</label>
+    //   </div>;
+
+    // this.uploadModal = React.createRef();
+
+    for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
+      if (!["constructor", "render"].includes(key)) {
+        this[key] = this[key].bind(this);
+      }
+    }
+
 	}
 
   async componentDidMount() {
-    const dataset = await this.transport.socketCall('getStorageStructure');
-    dataset.sort(comparator);
-    this.setState({ dataset });
+    if (this.props.authed) {
+      const dataset = await this.transport.socketCall('getStorageStructure');
+      dataset.sort(comparator);
+      this.setState({ dataset });
+    }
+  }
+
+  async filesSelected(event) {
+    console.log(event.target.files);
+    const changes = [];
+    for (const file of event.target.files) changes.push([file.name, 'file']);
+    for (const file of event.target.files) await this.transport.bufferCall(file);
+    this.transport.socketCall('pmtUpload', { 
+      currentPath: '/home' + this.state.currentPath, 
+      changes 
+    })
+    .then()
+    .catch(console.log);
+  }
+
+  upload() {
+    // this.uploadModal.current.toggleModal();
+    // this.transport.socketCall('rename', { 
+    //       currentPath: '/home', 
+    //       changes: [ 
+    //         ['file1', 'file105']
+    //       ]
+    //     })
+    // .then()
+    // .catch(console.log);
   }
 
 	render() {
 		return (
       <div>
+        {/* <Modal ref={ this.uploadModal } content={ this.uploadModalContent } title="Upload"/> */}
         <Header/>
         <div className="permanent">
           <div className="explorer">
             <div className="list-header">
               <div className="path">{ "/" + this.state.currentPath.slice(0, -1) }</div>
+              <input 
+                style={ {display: 'none'} } 
+                id="files" 
+                type="file" 
+                value={ this.state.value } 
+                onChange={ this.filesSelected }
+                multiple
+              />
               <div className="control-buttons">
                 <button className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"} onClick={() => {
                   this.setState({ favourites: [...this.state.favourites, ...this.state.selected.map( x => ({ name: x, path: x }) )] })
                 }}>
                   <img src={ `${process.env.PUBLIC_URL}/icons/bookmark.svg` } alt="Bookmark"/>
                 </button>
-                <button className="active control-button"><img src={ `${process.env.PUBLIC_URL}/icons/upload.svg` }   alt="Upload"  /></button>
+                <label className="active control-button"
+                  htmlFor="files"
+                ><img src={ `${process.env.PUBLIC_URL}/icons/upload.svg` }   alt="Upload"  /></label>
                 <button className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"}>       
                   <img src={ `${process.env.PUBLIC_URL}/icons/download.svg` } alt="Download"/>
                 </button>
