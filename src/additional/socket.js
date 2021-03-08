@@ -1,5 +1,6 @@
 export default class Transport {
   constructor() {
+    this.rebuildStructure = null;
     this.buffers = [];
     this.socket = new WebSocket('ws://' + window.location.host);
     this.callId = 0;
@@ -8,6 +9,11 @@ export default class Transport {
       try {
         if (typeof data === 'string') {
           const packet = JSON.parse(data);
+          const { structure } = packet; 
+          if (structure && this.rebuildStructure) {
+            this.rebuildStructure(structure);
+            return;
+          }
           const { callId } = packet
           const promised = this.calls.get(callId);
           if (!promised) return;
