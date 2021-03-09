@@ -29,7 +29,9 @@ export default class Permanent extends React.Component {
       currentPath: "",
       favourites: [{ path: "", name: "home" }],
       selected: [],
-      selectState: false
+      selectState: false,
+      creatingNewFolder: false,
+      newFolderName: "New Folder"
     };
 
     this.buffers = [];
@@ -105,13 +107,12 @@ export default class Permanent extends React.Component {
                 style={ {display: 'none'} } 
                 id="files" 
                 type="file" 
-                value={ this.state.value } 
                 onChange={ this.filesSelected }
                 multiple
               />
               <div className="control-buttons">
                 <button className={"active control-button"} onClick={() => {
-                  
+                  this.setState({ creatingNewFolder: true, newFolderName: "New Folder" });
                 }}>       
                   <img src={ `${process.env.PUBLIC_URL}/icons/newfolder.svg` } alt="New Folder"/>
                 </button>
@@ -119,9 +120,11 @@ export default class Permanent extends React.Component {
                   <img src={ `${process.env.PUBLIC_URL}/icons/upload.svg` } alt="Upload"/>
                 </label>
                 <button className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"} onClick={() => {
-                  let favourites = [...this.state.favourites, ...this.state.selected.map( x => ({ name: x, path: x }) )];
+                  console.log(this.state.favourites);
+                  let favourites = [...this.state.favourites, ...this.state.selected
+                    .filter(x => x.childs != null && !this.state.favourites.some(y => x.name == y.name))
+                    .map( x => ({ name: x.name, path: x.name }) )];
 
-                  favourites = [...new Set(favourites)]; // make unique
                   this.setState({ favourites })
                 }}>
                   <img src={ `${process.env.PUBLIC_URL}/icons/bookmark.svg` } alt="Bookmark"/>
@@ -155,10 +158,10 @@ export default class Permanent extends React.Component {
                 <PathList currentPath= { this.state.currentPath } dataset = { this.state.dataset } active={this.state.selected} 
                 onItemClick={item => {
                   if (this.state.selectState) {
-                    if (!this.state.selected.includes(item.name)) 
-                      this.state.selected.push(item.name);
+                    if (!this.state.selected.includes(item)) 
+                      this.state.selected.push(item);
                     else {
-                      const index = this.state.selected.indexOf(item.name);
+                      const index = this.state.selected.indexOf(item);
 
                       this.state.selected.splice(index, 1);
                     }
@@ -172,6 +175,22 @@ export default class Permanent extends React.Component {
                     this.setState({ selectState: true });
                   }
                 }}/>
+                {this.state.creatingNewFolder ? 
+                  <div className="new-folder">
+                    <img className="el-icon" src={ `${process.env.PUBLIC_URL}/icons/folder.svg` }/>
+                    <input className="el-input"
+                      value={ this.state.newFolderName }
+                      onChange={ event => this.setState({ newFolderName: event.target.value }) }
+                      onKeyPress={ event => { if (event.key === 'Enter') { 
+                        this.setState({ creatingNewFolder: false}); 
+                        this.transport.socketCall("pmtUpload", { 
+                          currentPath: '/home' + this.state.currentPath, 
+                          changes: [ [this.state.newFolderName, "folder"] ] 
+                        })
+                      } } }
+                    ></input>
+                  </div> 
+                : ""}
               </div>
             </div>
           </div>

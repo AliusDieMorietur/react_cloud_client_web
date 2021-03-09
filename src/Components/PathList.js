@@ -16,9 +16,9 @@ const convert = sizeInBytes => {
   const units = ['b', 'Kb', 'Mb', 'Gb', 'Tb'];
   const index = Math.floor(Math.log10(sizeInBytes) / 3);
   const unit = units[index];
-  const res = sizeInBytes / Math.pow(10, index * 3);
+  const res = (sizeInBytes / Math.pow(10, index * 3)) | 0;
 
-  return `${res ? res : 0} ${unit ? unit : units[0]}`
+  return `${Math.round((res + Number.EPSILON) * 100) / 100} ${unit ? unit : units[0]}`
 }
 
 export default class PathList extends React.Component {
@@ -36,7 +36,7 @@ export default class PathList extends React.Component {
         const imgSrc = item.childs === null
           ? `${process.env.PUBLIC_URL}/icons/file.svg`
           : `${process.env.PUBLIC_URL}/icons/folder.svg`;
-        const className = (this.props.active.includes(item.name) ? "active " : "") + "folder-list-el";
+        const className = (this.props.active.includes(item) ? "active " : "") + "folder-list-el";
         const holdTime = this.props.holdTime | 200;
 
         return <li className={className} key={index} 
