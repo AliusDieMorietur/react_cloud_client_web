@@ -14,8 +14,8 @@
     "web-vitals": "^1.1.0"
   },
   "scripts": {
-    "start": "find src/less/ -name '*.less' -exec npx lessc {} ; > src/combined.css && react-scripts start",
-    "build": "find src/less/ -name '*.less' -exec npx lessc {} ; > src/combined.css && react-scripts build",
+    "start": "ls src/less/*.less | awk '{ system(\"npx lessc \" $1) }' > src/combined.css && react-scripts start",
+    "build": "ls src/less/*.less | awk '{ system(\"npx lessc \" $1) }' > src/combined.css && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

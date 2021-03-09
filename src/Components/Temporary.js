@@ -123,11 +123,11 @@ export default class Temporary extends React.Component {
         { 
           this.state.token !== '' 
             ? <h1 className="form-token ">Your token: {this.state.token}<button className="active control-button" onClick={() => {
-              window.navigator
-                .clipboard
-                .writeText(this.state.token)
-                .then(() => { console.log("Copied!"); })
-                .catch(() => { console.log("Failed to copy!"); });
+              // window.navigator
+              //   .clipboard
+              //   .writeText(this.state.token)
+              //   .then(() => { console.log("Copied!"); })
+              //   .catch(() => { console.log("Failed to copy!"); });
             }}>
                 <img src={ `${process.env.PUBLIC_URL}/icons/copy.svg` } alt="copy"/>
               </button></h1> 
