@@ -35,8 +35,6 @@ export default class Transport {
     });
   }
 
-  getBuffers() { return this.buffers; }
-
   clearBuffers() { this.buffers = []; }
 
   ready() {
