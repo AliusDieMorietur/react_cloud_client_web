@@ -2,7 +2,17 @@ import React from 'react';
 import Header from './Header';
 import Accordeon from './Accordeon';
 import PathList from './PathList';
-import Modal from './Modal';
+
+const downloadFile = (name, dataBlob) => {
+  const blobUrl = window.URL.createObjectURL(dataBlob);
+  const link = document.createElement('a');
+  link.href = blobUrl;
+  link.setAttribute('download', name);
+  document.body.appendChild(link);
+  link.click();
+  link.parentNode.removeChild(link);
+  window.URL.revokeObjectURL(blobUrl);
+};
 
 const comparator = (a, b) => {
   const is_a_folder = a.childs !== null;
@@ -63,7 +73,7 @@ export default class Permanent extends React.Component {
 
   async componentDidMount() {
     if (this.props.authed) {
-      const dataset = await this.transport.socketCall('getStorageStructure');
+      const dataset = await this.transport.socketCall('availableFiles', {});
       dataset.sort(comparator);
       this.setState({ dataset });
     }
@@ -72,26 +82,62 @@ export default class Permanent extends React.Component {
   async filesSelected(event) {
     console.log(event.target.files);
     const changes = [];
-    for (const file of event.target.files) changes.push([file.name, 'file']);
+    for (const file of event.target.files) changes.push(file.name);
     for (const file of event.target.files) await this.transport.bufferCall(file);
     this.transport.socketCall('pmtUpload', { 
-      currentPath: '/home' + this.state.currentPath, 
+      currentPath: this.state.currentPath, 
       changes 
     })
     .then()
     .catch(console.log);
   }
 
-  upload() {
-    // this.uploadModal.current.toggleModal();
-    // this.transport.socketCall('rename', { 
-    //       currentPath: '/home', 
-    //       changes: [ 
-    //         ['file1', 'file105']
-    //       ]
-    //     })
-    // .then()
-    // .catch(console.log);
+  createLink() {
+    const onlyFile =
+      this.state.selected.length === 1 &&
+      this.state.selected[0].childs === null;
+    console.log(
+      this.state.currentPath, 
+      this.state.selected[0].name 
+    );
+    if (onlyFile) {
+      this.transport.socketCall('createLink', { 
+        filePath: 
+          this.state.selected[0].name 
+      })
+      .then(console.log)
+      .catch(console.log);
+    }
+  }
+
+  download() {
+    const fileList = this.state.selected
+      .filter(el => el.childs === null)
+      .map(el => el.name);
+
+    this.transport.socketCall('pmtDownload', { 
+      currentPath: this.state.currentPath , 
+      fileList 
+    })
+    .then(files => { 
+      for (let i = 0; i < files.length; i++) 
+        downloadFile(files[i], this.transport.buffers[i]); 
+      this.transport.clearBuffers();
+    })
+    .catch(console.log);
+  }
+
+  delete() {
+
+    const changes = this.state.selected
+      .map(el => [el.name, el.childs === null ? 'file' : 'folder']);
+
+    this.transport.socketCall('delete', { 
+      currentPath: '/home' + this.state.currentPath, 
+      changes 
+    })
+    .then()
+    .catch(console.log);
   }
 
 	render() {
@@ -126,16 +172,25 @@ export default class Permanent extends React.Component {
                     .map( x => ({ name: x.name, path: x.name }) )];
 
                   this.setState({ favourites })
-                }}>
+                ``}}>
                   <img src={ `${process.env.PUBLIC_URL}/icons/bookmark.svg` } alt="Bookmark"/>
                 </button>
-                <button className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"}>       
+                <button className={( this.state.selected.length === 1 ? "active " : "") + "control-button"}
+                  onClick={ this.createLink }>        
                   <img src={ `${process.env.PUBLIC_URL}/icons/link.svg` } alt="Link"/>
                 </button>
-                <button className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"}>       
+                <button 
+                  className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"}>       
+                  <img src={ `${process.env.PUBLIC_URL}/icons/edit.svg` } alt="Edit"/>
+                </button>
+                <button 
+                  className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"}
+                  onClick={ this.download }>       
                   <img src={ `${process.env.PUBLIC_URL}/icons/download.svg` } alt="Download"/>
                 </button>
-                <button className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"}>       
+                <button 
+                  className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"}
+                  onClick={ this.delete }>       
                   <img src={ `${process.env.PUBLIC_URL}/icons/delete.svg` } alt="Delete"/>
                 </button>
               </div>
