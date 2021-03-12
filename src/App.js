@@ -6,7 +6,7 @@ import Temporary from './Components/Temporary';
 import LoginForm from './Components/LoginForm';
 import Transport from './additional/socket';
 
-const NotFound = (props) => <h1>NOT FOUND</h1>;
+const NotFound = props => <h1>NOT FOUND</h1>;
 
 export default class App extends React.Component {
 	constructor(props) {
