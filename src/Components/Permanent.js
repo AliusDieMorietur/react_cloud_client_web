@@ -32,8 +32,7 @@ export default class Permanent extends React.Component {
     this.buffers = [];
     this.transport = this.props.transport;
     this.transport.rebuildStructure = structure => {
-      console.log(structure);
-      this.setState({ dataset: structure.sort(comparator) });
+      this.setState({ dataset: structure });
     };
 
     // this.uploadModalContent = 
@@ -68,7 +67,6 @@ export default class Permanent extends React.Component {
     const changes = [];
     for (const file of event.target.files) changes.push(file.name);
     for (const file of event.target.files) await this.transport.bufferCall(file);
-    console.log(changes);
     this.transport.socketCall('pmtUpload', { 
       currentPath: this.state.currentPath, 
       changes 
@@ -99,6 +97,8 @@ export default class Permanent extends React.Component {
     const fileList = this.state.selected
       .filter(el => el.childs === null)
       .map(el => el.name);
+
+    console.log(fileList);
 
     this.transport.socketCall('pmtDownload', { 
       currentPath: this.state.currentPath , 
