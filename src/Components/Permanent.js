@@ -84,6 +84,7 @@ export default class Permanent extends React.Component {
     const changes = [];
     for (const file of event.target.files) changes.push(file.name);
     for (const file of event.target.files) await this.transport.bufferCall(file);
+    console.log(changes);
     this.transport.socketCall('pmtUpload', { 
       currentPath: this.state.currentPath, 
       changes 
@@ -130,10 +131,11 @@ export default class Permanent extends React.Component {
   delete() {
 
     const changes = this.state.selected
+      .filter(el => el.childs === null)
       .map(el => [el.name, el.childs === null ? 'file' : 'folder']);
 
     this.transport.socketCall('delete', { 
-      currentPath: '/home' + this.state.currentPath, 
+      currentPath: this.state.currentPath, 
       changes 
     })
     .then()
@@ -238,9 +240,9 @@ export default class Permanent extends React.Component {
                       onChange={ event => this.setState({ newFolderName: event.target.value }) }
                       onKeyPress={ event => { if (event.key === 'Enter') { 
                         this.setState({ creatingNewFolder: false}); 
-                        this.transport.socketCall("pmtUpload", { 
-                          currentPath: '/home' + this.state.currentPath, 
-                          changes: [ [this.state.newFolderName, "folder"] ] 
+                        this.transport.socketCall("newFolder", { 
+                          currentPath: this.state.currentPath, 
+                          folderName: this.state.newFolderName
                         })
                       } } }
                     ></input>
