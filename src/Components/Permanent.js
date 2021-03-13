@@ -14,22 +14,7 @@ const downloadFile = (name, dataBlob) => {
   window.URL.revokeObjectURL(blobUrl);
 };
 
-const comparator = (a, b) => {
-  const is_a_folder = a.childs !== null;
-  const is_b_folder = b.childs !== null;
 
-  if(is_a_folder) a.childs.sort(comparator);
-  if(is_b_folder) b.childs.sort(comparator);
-
-  if (is_a_folder === is_b_folder) {
-    if (a.name < b.name) return -1;
-    else if (a.name === b.name) return 0;
-    else return 1;
-  } else {
-    if (is_a_folder) return -1;
-    else return 1;
-  }
-};
 
 export default class Permanent extends React.Component {
 	constructor(props) {
@@ -74,7 +59,6 @@ export default class Permanent extends React.Component {
   async componentDidMount() {
     if (this.props.authed) {
       const dataset = await this.transport.socketCall('availableFiles', {});
-      dataset.sort(comparator);
       this.setState({ dataset });
     }
   }
