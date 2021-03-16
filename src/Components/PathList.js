@@ -1,16 +1,5 @@
 import React from 'react';
-
-const generateListFromPath = (path, dataset) => {
-  const dir = path.shift();
-
-  for (const item of dataset) {
-    if(item.name === dir) {
-      return generateListFromPath(path, item.childs)
-    }
-  }
-
-  return dataset;
-}
+import { findPlace } from '../additional/utils'
 
 const convert = sizeInBytes => {
   const units = ['b', 'Kb', 'Mb', 'Gb', 'Tb'];
@@ -24,38 +13,60 @@ const convert = sizeInBytes => {
 export default class PathList extends React.Component {
 	constructor(props) {
 		super(props);
+    
 		this.state = {
-      timeout: null
-    };
+      timeout: null,
+      renameValue: ''
+    }
 	}
+
+  componentDidMount() {
+  }
 
 	render() {
     return <ul className="current-folder-list"> { 
-      generateListFromPath(this.props.currentPath.split("/"), this.props.dataset)
+      findPlace(this.props.dataset, this.props.currentPath)
         .map((item, index) =>  {
         const imgSrc = item.childs === null
           ? `${process.env.PUBLIC_URL}/icons/file.svg`
           : `${process.env.PUBLIC_URL}/icons/folder.svg`;
         const className = (this.props.active.includes(item) ? "active " : "") + "folder-list-el";
         const holdTime = this.props.holdTime | 200;
+        let name = item.name;
 
-        return <li className={className} key={index} 
-          // onClick={() => { console.log(this.state.timeout); if (!this.state.timeout)  } } 
-          onMouseDown={ () => { this.state.timeout = setTimeout(() => { 
-            this.props.onItemHold(item); 
-            this.props.onItemClick(item); 
-            this.state.timeout = null; 
-          }, holdTime) }}
-          onMouseUp={ () => { 
-            if (this.state.timeout != null) {
-              clearTimeout(this.state.timeout); 
-              this.state.timeout = null; 
-              this.props.onItemClick(item); 
-            }
+        return <li 
+          className={className}
+          key={index} 
+          onDoubleClick={() => {
+            this.props.goTo(item);
+          }}
+          onClick={() => {
+            this.props.select(item);
           }}
         >
           <img className="el-icon" src={ imgSrc }/>
-          <div className="el-name">{item.name}</div>
+          { 
+            this.props.renameIndex === index 
+              ? <input
+                  className="el-input"
+                  value={ this.state.renameValue || name }
+                  onChange={ event => {
+                    name = '';
+                    this.setState({ renameValue: event.target.value }) 
+                  }}
+                  onKeyPress={ event => { 
+                    if (event.key === 'Enter') { 
+                      this.props.onRename(this.state.renameValue);
+                      this.setState({ renameValue: '' }); 
+                    }
+                  }}
+                /> 
+              : <div 
+                  className="el-name"
+                >
+                  {item.name}
+                </div>
+          }
           <div className="el-capacity">{ convert(item.capacity) }</div>
         </li>
       }) 
