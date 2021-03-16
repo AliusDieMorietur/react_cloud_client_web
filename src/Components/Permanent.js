@@ -2,19 +2,7 @@ import React from 'react';
 import Header from './Header';
 import Accordeon from './Accordeon';
 import PathList from './PathList';
-
-const downloadFile = (name, dataBlob) => {
-  const blobUrl = window.URL.createObjectURL(dataBlob);
-  const link = document.createElement('a');
-  link.href = blobUrl;
-  link.setAttribute('download', name);
-  document.body.appendChild(link);
-  link.click();
-  link.parentNode.removeChild(link);
-  window.URL.revokeObjectURL(blobUrl);
-};
-
-
+import { findPlace, downloadFile, copyToClipboard, toFlat } from '../additional/utils' 
 
 export default class Permanent extends React.Component {
 	constructor(props) {
@@ -26,13 +14,21 @@ export default class Permanent extends React.Component {
       selected: [],
       selectState: false,
       creatingNewFolder: false,
-      newFolderName: "New Folder"
+      newFolderName: "New Folder",
+      renameIndex: -1
     };
 
     this.buffers = [];
     this.transport = this.props.transport;
     this.transport.rebuildStructure = structure => {
-      this.setState({ dataset: structure });
+      console.log(this.state.currentPath);
+      this.setState({ 
+        dataset: structure, 
+        selected: [],
+        renameIndex: -1,
+        selectState: false,
+        creatingNewFolder: false
+      });
     };
 
     // this.uploadModalContent = 
@@ -56,6 +52,13 @@ export default class Permanent extends React.Component {
 	}
 
   async componentDidMount() {
+    document.addEventListener('keydown', event => {
+      if (
+        event.key === 'F2' && 
+        this.state.selected.length === 1 &&
+        this.state.renameIndex === -1
+      ) this.rename();
+    }, false);
     if (this.props.authed) {
       const dataset = await this.transport.socketCall('availableFiles', {});
       this.setState({ dataset });
@@ -63,14 +66,14 @@ export default class Permanent extends React.Component {
   }
 
   async filesSelected(event) {
-    console.log(event.target.files);
-    const changes = [];
-    for (const file of event.target.files) changes.push(file.name);
+    const fileList = [];
+    for (const file of event.target.files) {
+      console.log(`${this.state.currentPath}${file.name}`);
+      fileList.push(`${this.state.currentPath}${file.name}`);
+    }
     for (const file of event.target.files) await this.transport.bufferCall(file);
-    this.transport.socketCall('pmtUpload', { 
-      currentPath: this.state.currentPath, 
-      changes 
-    })
+    event.target.value = "";
+    this.transport.socketCall('pmtUpload', { fileList })
     .then()
     .catch(console.log);
   }
@@ -79,31 +82,23 @@ export default class Permanent extends React.Component {
     const onlyFile =
       this.state.selected.length === 1 &&
       this.state.selected[0].childs === null;
-    console.log(
-      this.state.currentPath, 
-      this.state.selected[0].name 
-    );
+
     if (onlyFile) {
       this.transport.socketCall('createLink', { 
         filePath: 
           this.state.selected[0].name 
       })
-      .then(console.log)
+      .then(async token => {
+        copyToClipboard(`${window.location.origin}/link/${token}`);
+      })
       .catch(console.log);
     }
   }
 
   download() {
-    const fileList = this.state.selected
-      .filter(el => el.childs === null)
-      .map(el => el.name);
+    const fileList = toFlat(this.state.currentPath, this.state.selected);
 
-    console.log(fileList);
-
-    this.transport.socketCall('pmtDownload', { 
-      currentPath: this.state.currentPath , 
-      fileList 
-    })
+    this.transport.socketCall('pmtDownload', { fileList })
     .then(files => { 
       for (let i = 0; i < files.length; i++) 
         downloadFile(files[i], this.transport.buffers[i]); 
@@ -113,17 +108,22 @@ export default class Permanent extends React.Component {
   }
 
   delete() {
-
-    const changes = this.state.selected
-      .filter(el => el.childs === null)
-      .map(el => [el.name, el.childs === null ? 'file' : 'folder']);
-
-    this.transport.socketCall('delete', { 
-      currentPath: this.state.currentPath, 
-      changes 
-    })
+    const fileList = toFlat(this.state.currentPath, this.state.selected, [], true);
+    console.log(fileList);
+    this.transport.socketCall('delete', { fileList })
     .then()
     .catch(console.log);
+  }
+
+  rename() {
+    if (this.state.selected.length === 1) {
+      console.log(this.state.selected);
+      const { name } = this.state.selected[0];
+      const place = findPlace(this.state.dataset, this.state.currentPath);
+      const names = place.map(item => item.name);
+      const renameIndex = names.indexOf(name);
+      this.setState({ renameIndex });
+    }
   }
 
 	render() {
@@ -161,12 +161,14 @@ export default class Permanent extends React.Component {
                 ``}}>
                   <img src={ `${process.env.PUBLIC_URL}/icons/bookmark.svg` } alt="Bookmark"/>
                 </button>
-                <button className={( this.state.selected.length === 1 ? "active " : "") + "control-button"}
+                <button 
+                  className={( this.state.selected.length === 1 && this.state.selected[0].childs === null ? "active " : "") + "control-button"}
                   onClick={ this.createLink }>        
                   <img src={ `${process.env.PUBLIC_URL}/icons/link.svg` } alt="Link"/>
                 </button>
                 <button 
-                  className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"}>       
+                  className={( this.state.selected.length === 1 ? "active " : "") + "control-button"}
+                  onClick={ this.rename }>       
                   <img src={ `${process.env.PUBLIC_URL}/icons/edit.svg` } alt="Edit"/>
                 </button>
                 <button 
@@ -184,38 +186,72 @@ export default class Permanent extends React.Component {
             <div className="main">
               <div className="navbar">
                 <div className="favourites">
-                  { this.state.favourites.map((item, index) => <div className="favourites-title" key={index} 
-                    onClick = { () => this.setState({ currentPath: item.path, selected: [], selectState: false }) }
-                  >
-                    { item.name }
+                  { this.state.favourites.map((item, index) => 
+                    <div 
+                      className="favourites-title" 
+                      key={index} 
+                      onClick = { (() => 
+                        this.setState({ 
+                          currentPath: item.path, 
+                          selected: [], 
+                          selectState: false 
+                        })
+                      ).bind(this) }
+                    >{ item.name }
                   </div>) }
-                </div>
-                <Accordeon dataset={ this.state.dataset } onItemClick={(item, path) => {
-                  if (item.childs !== null)
-                    this.setState({ currentPath: `${path}${item.name}/`, selected: [], selectState: false })
-                }}/>
+                </div>    
+                <Accordeon 
+                  dataset={ this.state.dataset } 
+                  onItemClick={(item, path) => {
+                    if (item.childs !== null)
+                      this.setState({ 
+                        currentPath: `${path}${item.name}/`, 
+                        selected: [], 
+                        selectState: false 
+                      })
+                  }}
+                />
               </div>
               <div className="hierarchy">
-                <PathList currentPath= { this.state.currentPath } dataset = { this.state.dataset } active={this.state.selected} 
-                onItemClick={item => {
-                  if (this.state.selectState) {
-                    if (!this.state.selected.includes(item)) 
-                      this.state.selected.push(item);
-                    else {
-                      const index = this.state.selected.indexOf(item);
-
-                      this.state.selected.splice(index, 1);
+                <PathList 
+                  currentPath={ this.state.currentPath } 
+                  dataset={ this.state.dataset } 
+                  active={ this.state.selected }
+                  renameIndex={ this.state.renameIndex } 
+                  onRename={ newName => {
+                    const item = this.state.selected[0]
+                    const { name } = item;
+                    const fullName = 
+                      `${this.state.currentPath}${name}${item.childs === null ? '' : '/'}`;
+                    this.setState({ renameIndex: -1, selected: [] });
+                    this.transport.socketCall('rename', { 
+                      name: fullName, 
+                      newName: `${this.state.currentPath}${newName}${item.childs === null ? '' : '/'}`
+                    })
+                  } }
+                  goTo={ item => {
+                    if (item.childs !== null && this.state.renameIndex === -1) {
+                      this.setState({ currentPath: `${this.state.currentPath}${item.name}/` });
+                      this.setState({ 
+                        selected: [],
+                        renameIndex: -1,
+                        selectState: false,
+                        creatingNewFolder: false,
+                      });
                     }
-                    this.forceUpdate();
-
-                    if (this.state.selected.length === 0) this.setState({ selectState: false });
-                  } else if (item.childs !== null) this.setState({ currentPath: `${this.state.currentPath}${item.name}/` })
-                }} 
-                onItemHold={item => {
-                  if (!this.state.selectState) {
-                    this.setState({ selectState: true });
-                  }
-                }}/>
+                  }}
+                  select={ item => {
+                    if (this.state.renameIndex === -1) {
+                      if (!this.state.selected.includes(item)) 
+                        this.state.selected.push(item);
+                      else {
+                        const index = this.state.selected.indexOf(item);
+                        this.state.selected.splice(index, 1);
+                      }
+                      this.forceUpdate();
+                    }
+                  }}
+                />
                 {this.state.creatingNewFolder ? 
                   <div className="new-folder">
                     <img className="el-icon" src={ `${process.env.PUBLIC_URL}/icons/folder.svg` }/>
@@ -223,10 +259,8 @@ export default class Permanent extends React.Component {
                       value={ this.state.newFolderName }
                       onChange={ event => this.setState({ newFolderName: event.target.value }) }
                       onKeyPress={ event => { if (event.key === 'Enter') { 
-                        this.setState({ creatingNewFolder: false}); 
                         this.transport.socketCall("newFolder", { 
-                          currentPath: this.state.currentPath, 
-                          folderName: this.state.newFolderName
+                          folderName: `${this.state.currentPath}${this.state.newFolderName}/`
                         })
                       } } }
                     ></input>
