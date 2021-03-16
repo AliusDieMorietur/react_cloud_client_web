@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from './Header';
+import { copyToClipboard } from '../additional/utils';
 
 const downloadFile = (name, dataBlob) => {
   const blobUrl = window.URL.createObjectURL(dataBlob);
@@ -78,7 +79,7 @@ export default class Temporary extends React.Component {
       this.showError(new Error('Enter valid token please'));
       return;
     };
-    this.transport.socketCall('availableFiles', { storageName: 'tmp', token: this.state.input  })
+    this.transport.socketCall('availableFiles', { token: this.state.input  })
       .then(availableFiles => this.setState({ availableFiles }))
       .catch(this.showError);
   }
@@ -93,10 +94,8 @@ export default class Temporary extends React.Component {
       fileList
     })
     .then(files => { 
-      const buffers = this.transport.getBuffers();
-
       for (let i = 0; i < files.length; i++) 
-        downloadFile(files[i], buffers[i]); 
+        downloadFile(files[i], this.transport.buffers[i]); 
       this.transport.clearBuffers();
     })
     .catch(this.showError);
@@ -123,11 +122,7 @@ export default class Temporary extends React.Component {
         { 
           this.state.token !== '' 
             ? <h1 className="form-token ">Your token: {this.state.token}<button className="active control-button" onClick={() => {
-              // window.navigator
-              //   .clipboard
-              //   .writeText(this.state.token)
-              //   .then(() => { console.log("Copied!"); })
-              //   .catch(() => { console.log("Failed to copy!"); });
+              copyToClipboard(this.state.token);
             }}>
                 <img src={ `${process.env.PUBLIC_URL}/icons/copy.svg` } alt="copy"/>
               </button></h1> 
