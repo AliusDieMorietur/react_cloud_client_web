@@ -75,6 +75,7 @@
           .favourites-title {
             padding: 5px 0px;
             color: @font-weak;
+            cursor: pointer;
             transition: all 0.2s ease-out;
             &.active {
               color: @font;
@@ -112,6 +113,7 @@
         .accordeon {
           display: flex;
           flex-direction: column;
+          transition: all 0.1s ease-out;
           .accordeon-head {
             display: flex;
             cursor: pointer;
@@ -130,9 +132,13 @@
           }
           .accordeon-body {
             display: none;
+            transition: all 0.1s ease-out;
+            transform: translateY(-10px);
             &.active {
               display: flex;
               flex-direction: column;
+              visibility: visible;
+              transform: translateY(0px);
             }
           }
         }
@@ -169,6 +175,16 @@
               color: @font-weak;
               cursor: pointer;
               text-align: start;
+            }
+            .el-input {
+              flex-grow: 0;
+              background: transparent;
+              font-size: 20px;
+              color: @font-weak;
+              cursor: pointer;
+              text-align: start;
+              padding-bottom: 1px;
+              border-bottom: 1px solid @border;
             }
             .el-capacity {
               flex-grow: 1;
@@ -220,13 +236,6 @@
             text-align: start;
             padding-bottom: 1px;
             border-bottom: 1px solid @border;
-            // ::-webkit-input-placeholder { /* Edge */
-            //   color: red;
-            // }
-            
-            // :-ms-input-placeholder { /* Internet Explorer 10-11 */
-            //   color: red;
-            // }
           }
         }
       }
