@@ -21,7 +21,6 @@ export default class Permanent extends React.Component {
     this.buffers = [];
     this.transport = this.props.transport;
     this.transport.rebuildStructure = structure => {
-      console.log(this.state.currentPath);
       this.setState({ 
         dataset: structure, 
         selected: [],
@@ -67,15 +66,17 @@ export default class Permanent extends React.Component {
 
   async filesSelected(event) {
     const fileList = [];
-    for (const file of event.target.files) {
-      console.log(`${this.state.currentPath}${file.name}`);
+
+    for (const file of event.target.files) 
       fileList.push(`${this.state.currentPath}${file.name}`);
-    }
-    for (const file of event.target.files) await this.transport.bufferCall(file);
+
+    for (const file of event.target.files) 
+      await this.transport.bufferCall(file);
+
     event.target.value = "";
     this.transport.socketCall('pmtUpload', { fileList })
-    .then()
-    .catch(console.log);
+      .then()
+      .catch(console.log);
   }
 
   createLink() {
@@ -126,6 +127,36 @@ export default class Permanent extends React.Component {
     }
   }
 
+  addToFavourites() {
+    const onlyFolder = 
+      this.state.selected.length === 1 &&
+      this.state.selected[0].childs !== null;
+      
+    if (onlyFolder) {
+      const { name } = this.state.selected[0];
+      const { favourites } = this.state; 
+      const favouritesNames = favourites.map(item => item.name);
+
+      if (favouritesNames.includes(name)) {
+        const index = favourites.indexOf(name);
+        favourites.splice(index, 1);
+      } else favourites.push({ name, path: name });
+      this.setState({ favourites });
+    }
+  }
+
+  goTo(item) {
+    if (item.childs !== null && this.state.renameIndex === -1) {
+      this.setState({ 
+        currentPath: `${this.state.currentPath}${item.name}/`,
+        selected: [],
+        renameIndex: -1,
+        selectState: false,
+        creatingNewFolder: false
+      });
+    }
+  }
+
 	render() {
 		return (
       <div>
@@ -151,14 +182,14 @@ export default class Permanent extends React.Component {
                 <label className="active control-button" htmlFor="files">
                   <img src={ `${process.env.PUBLIC_URL}/icons/upload.svg` } alt="Upload"/>
                 </label>
-                <button className={( this.state.selected.length === 0 ? "" : "active ") + "control-button"} onClick={() => {
-                  console.log(this.state.favourites);
-                  let favourites = [...this.state.favourites, ...this.state.selected
-                    .filter(x => x.childs != null && !this.state.favourites.some(y => x.name == y.name))
-                    .map( x => ({ name: x.name, path: x.name }) )];
-
-                  this.setState({ favourites })
-                ``}}>
+                <button 
+                  className={( 
+                    this.state.selected.length === 1 && 
+                    this.state.selected[0].childs !== null 
+                      ? "active " 
+                      : "")
+                    + "control-button"} 
+                  onClick={ this.addToFavourites }>
                   <img src={ `${process.env.PUBLIC_URL}/icons/bookmark.svg` } alt="Bookmark"/>
                 </button>
                 <button 
@@ -190,13 +221,17 @@ export default class Permanent extends React.Component {
                     <div 
                       className="favourites-title" 
                       key={index} 
-                      onClick = { (() => 
-                        this.setState({ 
-                          currentPath: item.path, 
-                          selected: [], 
-                          selectState: false 
-                        })
-                      ).bind(this) }
+                      onClick = { () => {
+                        if (this.state.renameIndex === -1) {
+                          this.setState({ 
+                            currentPath: item.path + '/',
+                            selected: [],
+                            renameIndex: -1,
+                            selectState: false,
+                            creatingNewFolder: false
+                          });
+                        }
+                      } }
                     >{ item.name }
                   </div>) }
                 </div>    
@@ -205,10 +240,12 @@ export default class Permanent extends React.Component {
                   onItemClick={(item, path) => {
                     if (item.childs !== null)
                       this.setState({ 
-                        currentPath: `${path}${item.name}/`, 
-                        selected: [], 
-                        selectState: false 
-                      })
+                        currentPath: `${path}${item.name}/`,
+                        selected: [],
+                        renameIndex: -1,
+                        selectState: false,
+                        creatingNewFolder: false
+                      });
                   }}
                 />
               </div>
@@ -229,17 +266,7 @@ export default class Permanent extends React.Component {
                       newName: `${this.state.currentPath}${newName}${item.childs === null ? '' : '/'}`
                     })
                   } }
-                  goTo={ item => {
-                    if (item.childs !== null && this.state.renameIndex === -1) {
-                      this.setState({ currentPath: `${this.state.currentPath}${item.name}/` });
-                      this.setState({ 
-                        selected: [],
-                        renameIndex: -1,
-                        selectState: false,
-                        creatingNewFolder: false,
-                      });
-                    }
-                  }}
+                  goTo={ this.goTo }
                   select={ item => {
                     if (this.state.renameIndex === -1) {
                       if (!this.state.selected.includes(item)) 
