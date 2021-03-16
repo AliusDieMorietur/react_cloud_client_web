@@ -86,7 +86,7 @@ export default class Permanent extends React.Component {
 
     if (onlyFile) {
       this.transport.socketCall('createLink', { 
-        filePath: 
+        name: 
           this.state.selected[0].name 
       })
       .then(async token => {
@@ -287,7 +287,7 @@ export default class Permanent extends React.Component {
                       onChange={ event => this.setState({ newFolderName: event.target.value }) }
                       onKeyPress={ event => { if (event.key === 'Enter') { 
                         this.transport.socketCall("newFolder", { 
-                          folderName: `${this.state.currentPath}${this.state.newFolderName}/`
+                          name: `${this.state.currentPath}${this.state.newFolderName}/`
                         })
                       } } }
                     ></input>

@@ -89,7 +89,6 @@ export default class Temporary extends React.Component {
       ? this.state.availableFiles
       : [event.target.innerText]
     this.transport.socketCall('tmpDownload', { 
-      storageName: 'tmp',
       token: this.state.input.trim(), 
       fileList
     })
