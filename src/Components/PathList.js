@@ -20,9 +20,6 @@ export default class PathList extends React.Component {
     }
 	}
 
-  componentDidMount() {
-  }
-
 	render() {
     return <ul className="current-folder-list"> { 
       findPlace(this.props.dataset, this.props.currentPath)
@@ -49,9 +46,8 @@ export default class PathList extends React.Component {
             this.props.renameIndex === index 
               ? <input
                   className="el-input"
-                  value={ this.state.renameValue || name }
+                  value={ this.state.renameValue || item.name }
                   onChange={ event => {
-                    name = '';
                     this.setState({ renameValue: event.target.value }) 
                   }}
                   onKeyPress={ event => { 
