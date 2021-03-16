@@ -1,14 +1,12 @@
 // out: ../css/header.css
 
-@background: #212121;
-@font: #FFFFFF;
-@border: #ADADAD;
-@error: #E62737;
+@import "colors.less";
 
 .header {
   display: flex;
   justify-content: center;
   padding: 15px;
+  margin-top: 50px;
   .logo-box {
     margin-right: 25px;
     .logo {
@@ -21,7 +19,7 @@
     .location {
       cursor: pointer;
       background-color: transparent;
-      color: @border;
+      color: @font-weak;
       font-size: 20px;
       padding: 5px 7.5px;
       margin: auto 5px;

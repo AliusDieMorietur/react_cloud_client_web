@@ -1,12 +1,19 @@
 export default class Transport {
-  constructor(host, bufferConstruct) {
-    this.socket = new WebSocket('ws://' + host);
+  constructor() {
+    this.rebuildStructure = null;
+    this.buffers = [];
+    this.socket = new WebSocket('ws://' + window.location.host);
     this.callId = 0;
     this.calls = new Map();
     this.socket.addEventListener('message', ({ data }) => {
       try {
         if (typeof data === 'string') {
           const packet = JSON.parse(data);
+          const { structure } = packet; 
+          if (structure && this.rebuildStructure) {
+            this.rebuildStructure(structure);
+            return;
+          }
           const { callId } = packet
           const promised = this.calls.get(callId);
           if (!promised) return;
@@ -20,13 +27,15 @@ export default class Transport {
           }
           resolve(packet.result);
         } else {
-          bufferConstruct(data);
+          this.buffers.push(data);
         }
       } catch (err) {
         console.error(err);
       }
     });
   }
+
+  clearBuffers() { this.buffers = []; }
 
   ready() {
     return new Promise(resolve => {

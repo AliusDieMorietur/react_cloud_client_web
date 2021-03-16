@@ -1,9 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import './css/style.css';
-import './css/header.css';
-import './css/form.css';
+import './combined.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
@@ -15,3 +13,4 @@ ReactDOM.render(
 );
 
 reportWebVitals();
+
