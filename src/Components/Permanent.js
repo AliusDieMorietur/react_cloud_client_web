@@ -87,7 +87,7 @@ export default class Permanent extends React.Component {
 
     if (onlyFile) {
       this.transport.socketCall('createLink', { 
-        filePath: 
+        name: 
           this.state.selected[0].name 
       })
       .then(async token => {
@@ -100,12 +100,13 @@ export default class Permanent extends React.Component {
   download() {
     const fileList = toFlat(this.state.currentPath, this.state.selected);
 
+    this.transport.names = fileList;
     this.transport.socketCall('pmtDownload', { fileList })
-    .then(files => { 
-      for (let i = 0; i < files.length; i++) 
-        downloadFile(files[i], this.transport.buffers[i]); 
-      this.transport.clearBuffers();
-    })
+    // .then(files => { 
+    //   for (let i = 0; i < files.length; i++) 
+    //     downloadFile(files[i], this.transport.buffers[i]); 
+    //   this.transport.clearBuffers();
+    // })
     .catch(console.log);
   }
 
@@ -288,7 +289,7 @@ export default class Permanent extends React.Component {
                       onChange={ event => this.setState({ newFolderName: event.target.value }) }
                       onKeyPress={ event => { if (event.key === 'Enter') { 
                         this.transport.socketCall("newFolder", { 
-                          folderName: `${this.state.currentPath}${this.state.newFolderName}/`
+                          name: `${this.state.currentPath}${this.state.newFolderName}/`
                         })
                       } } }
                     ></input>

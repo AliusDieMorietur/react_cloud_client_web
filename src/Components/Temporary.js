@@ -1,17 +1,7 @@
 import React from 'react';
 import Header from './Header';
-import { copyToClipboard } from '../additional/utils';
+import { copyToClipboard, downloadFile } from '../additional/utils';
 
-const downloadFile = (name, dataBlob) => {
-  const blobUrl = window.URL.createObjectURL(dataBlob);
-  const link = document.createElement('a');
-  link.href = blobUrl;
-  link.setAttribute('download', name);
-  document.body.appendChild(link);
-  link.click();
-  link.parentNode.removeChild(link);
-  window.URL.revokeObjectURL(blobUrl);
-};
 
 export default class Temporary extends React.Component {
   constructor(props) {
@@ -23,7 +13,8 @@ export default class Temporary extends React.Component {
       token: '',
       availableFiles: [],
       input: '',
-      error: ''
+      error: '',
+      target: null
     };
     this.timer = null;
     this.buffers = [];
@@ -46,7 +37,7 @@ export default class Temporary extends React.Component {
     const chosen = [];
     
     for (const file of event.target.files) { chosen.push(file.name); };
-    this.setState({ files: event.target.files, chosen });
+    this.setState({ target: event.target, chosen });
   }
 
   tokenInputChange(event) {
@@ -58,6 +49,7 @@ export default class Temporary extends React.Component {
       this.showError(new Error('Nothing selected. Select, then upload'));
       return;
     };
+    
     this.setState({ token: 'loading...' });
 
     // const fileList = this.state.files.map(file => file.name);
@@ -90,17 +82,18 @@ export default class Temporary extends React.Component {
   download(event) {
     const fileList = event.target.innerText === 'Download All'
       ? this.state.availableFiles
-      : [event.target.innerText]
+      : [event.target.innerText];
+
+    this.transport.names = fileList;
     this.transport.socketCall('tmpDownload', { 
-      storageName: 'tmp',
       token: this.state.input.trim(), 
       fileList
     })
-    .then(files => { 
-      for (let i = 0; i < files.length; i++) 
-        downloadFile(files[i], this.transport.buffers[i]); 
-      this.transport.clearBuffers();
-    })
+    // .then(files => { 
+    //   for (let i = 0; i < files.length; i++) 
+    //     downloadFile(files[i], this.transport.buffers[i]); 
+    //   this.transport.clearBuffers();
+    // })
     .catch(this.showError);
   }
 
