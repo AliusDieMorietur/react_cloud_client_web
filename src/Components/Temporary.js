@@ -60,18 +60,21 @@ export default class Temporary extends React.Component {
     };
     this.setState({ token: 'loading...' });
 
+    // const fileList = this.state.files.map(file => file.name);
     const fileList = [];
 
     for (const file of this.state.files) fileList.push(file.name);
-    for (const file of this.state.files) await this.transport.bufferCall(file);
-    this.transport.socketCall('tmpUpload', { fileList })
-      .then(token => this.setState({ 
-        token, 
-        files: [], 
-        chosen: ['None'], 
-        availableFiles: []
-      }))
-      .catch(this.showError);
+    this.transport.socketCall('upload', { fileList, storage: 'tmp' })
+      .then(token => {
+        for (const file of this.state.files) this.transport.bufferCall(file);
+
+        this.setState({ 
+          token, 
+          files: [], 
+          chosen: ['None'], 
+          availableFiles: []
+        }) 
+      }).catch(this.showError);
   }
 
   getFilenames() {

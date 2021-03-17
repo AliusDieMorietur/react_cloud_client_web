@@ -70,12 +70,13 @@ export default class Permanent extends React.Component {
     for (const file of event.target.files) 
       fileList.push(`${this.state.currentPath}${file.name}`);
 
-    for (const file of event.target.files) 
-      await this.transport.bufferCall(file);
+    this.transport.socketCall('upload', { fileList, storage: 'pmt' })
+      .then(async () => {
+        for (const file of event.target.files) 
+          await this.transport.bufferCall(file);
 
-    event.target.value = "";
-    this.transport.socketCall('pmtUpload', { fileList })
-      .then()
+        event.target.value = "";
+      })
       .catch(console.log);
   }
 
