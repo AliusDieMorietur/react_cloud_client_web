@@ -1,17 +1,7 @@
 import React from 'react';
 import Header from './Header';
-import { copyToClipboard } from '../additional/utils';
+import { copyToClipboard, downloadFile } from '../additional/utils';
 
-const downloadFile = (name, dataBlob) => {
-  const blobUrl = window.URL.createObjectURL(dataBlob);
-  const link = document.createElement('a');
-  link.href = blobUrl;
-  link.setAttribute('download', name);
-  document.body.appendChild(link);
-  link.click();
-  link.parentNode.removeChild(link);
-  window.URL.revokeObjectURL(blobUrl);
-};
 
 export default class Temporary extends React.Component {
   constructor(props) {
@@ -23,7 +13,8 @@ export default class Temporary extends React.Component {
       token: '',
       availableFiles: [],
       input: '',
-      error: ''
+      error: '',
+      target: null
     };
     this.timer = null;
     this.buffers = [];
@@ -46,7 +37,7 @@ export default class Temporary extends React.Component {
     const chosen = [];
     
     for (const file of event.target.files) { chosen.push(file.name); };
-    this.setState({ files: event.target.files, chosen });
+    this.setState({ target: event.target, chosen });
   }
 
   tokenInputChange(event) {
@@ -58,20 +49,28 @@ export default class Temporary extends React.Component {
       this.showError(new Error('Nothing selected. Select, then upload'));
       return;
     };
+    
     this.setState({ token: 'loading...' });
 
     const fileList = [];
 
-    for (const file of this.state.files) fileList.push(file.name);
-    for (const file of this.state.files) await this.transport.bufferCall(file);
-    this.transport.socketCall('tmpUpload', { fileList })
-      .then(token => this.setState({ 
+    for (const file of this.state.target.files) fileList.push(file.name);
+
+    try {
+      const token = await this.transport.socketCall('tmpUpload', { fileList });
+    
+      for (const file of this.state.target.files) await this.transport.bufferCall(file);
+  
+      this.state.target.value = "";
+      this.setState({ 
         token, 
-        files: [], 
+        target: null, 
         chosen: ['None'], 
         availableFiles: []
-      }))
-      .catch(this.showError);
+      });
+    } catch (error) {
+      this.showError(error);
+    }
   }
 
   getFilenames() {
@@ -87,16 +86,19 @@ export default class Temporary extends React.Component {
   download(event) {
     const fileList = event.target.innerText === 'Download All'
       ? this.state.availableFiles
-      : [event.target.innerText]
+      : [event.target.innerText];
+
+    this.transport.names = fileList;
     this.transport.socketCall('tmpDownload', { 
       token: this.state.input.trim(), 
       fileList
     })
-    .then(files => { 
-      for (let i = 0; i < files.length; i++) 
-        downloadFile(files[i], this.transport.buffers[i]); 
-      this.transport.clearBuffers();
-    })
+    .then()
+    // .then(files => { 
+    //   for (let i = 0; i < files.length; i++) 
+    //     downloadFile(files[i], this.transport.buffers[i]); 
+    //   this.transport.clearBuffers();
+    // })
     .catch(this.showError);
   }
 

@@ -70,13 +70,13 @@ export default class Permanent extends React.Component {
     for (const file of event.target.files) 
       fileList.push(`${this.state.currentPath}${file.name}`);
 
+    await this.transport.socketCall('pmtUpload', { fileList })
+    
     for (const file of event.target.files) 
       await this.transport.bufferCall(file);
 
     event.target.value = "";
-    this.transport.socketCall('pmtUpload', { fileList })
-      .then()
-      .catch(console.log);
+
   }
 
   createLink() {
@@ -99,12 +99,14 @@ export default class Permanent extends React.Component {
   download() {
     const fileList = toFlat(this.state.currentPath, this.state.selected);
 
+    this.transport.names = fileList;
     this.transport.socketCall('pmtDownload', { fileList })
-    .then(files => { 
-      for (let i = 0; i < files.length; i++) 
-        downloadFile(files[i], this.transport.buffers[i]); 
-      this.transport.clearBuffers();
-    })
+    .then()
+    // .then(files => { 
+    //   for (let i = 0; i < files.length; i++) 
+    //     downloadFile(files[i], this.transport.buffers[i]); 
+    //   this.transport.clearBuffers();
+    // })
     .catch(console.log);
   }
 

@@ -1,7 +1,11 @@
+import { createThis } from 'typescript';
+import { downloadFile } from './utils';
+
 export default class Transport {
   constructor() {
     this.rebuildStructure = null;
-    this.buffers = [];
+    this.names = [];
+    this.counter = 0;
     this.socket = new WebSocket('ws://' + window.location.host);
     this.callId = 0;
     this.calls = new Map();
@@ -27,7 +31,10 @@ export default class Transport {
           }
           resolve(packet.result);
         } else {
-          this.buffers.push(data);
+          if (this.names.length !== 0) {
+            downloadFile(this.names[this.counter], data);
+            this.counter = (this.counter + 1) % this.names.length;
+          }
         }
       } catch (err) {
         console.error(err);
