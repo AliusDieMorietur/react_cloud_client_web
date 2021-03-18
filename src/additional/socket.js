@@ -32,7 +32,9 @@ export default class Transport {
           resolve(packet.result);
         } else {
           if (this.names.length !== 0) {
-            downloadFile(this.names[this.counter], data);
+            const item = this.names[this.counter];
+            const name = item.slice(item.lastIndexOf('/') + 1);
+            downloadFile(name, data);
             this.counter = (this.counter + 1) % this.names.length;
           }
         }

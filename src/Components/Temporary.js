@@ -13,8 +13,7 @@ export default class Temporary extends React.Component {
       token: '',
       availableFiles: [],
       input: '',
-      error: '',
-      target: null
+      error: ''
     };
     this.timer = null;
     this.buffers = [];
@@ -37,7 +36,7 @@ export default class Temporary extends React.Component {
     const chosen = [];
     
     for (const file of event.target.files) { chosen.push(file.name); };
-    this.setState({ target: event.target, chosen });
+    this.setState({ files: event.target.files, chosen });
   }
 
   tokenInputChange(event) {
@@ -52,7 +51,6 @@ export default class Temporary extends React.Component {
     
     this.setState({ token: 'loading...' });
 
-    // const fileList = this.state.files.map(file => file.name);
     const fileList = [];
 
     for (const file of this.state.files) fileList.push(file.name);
@@ -85,16 +83,11 @@ export default class Temporary extends React.Component {
       : [event.target.innerText];
 
     this.transport.names = fileList;
-    this.transport.socketCall('tmpDownload', { 
+    this.transport.socketCall('download', { 
       token: this.state.input.trim(), 
       fileList
     })
-    // .then(files => { 
-    //   for (let i = 0; i < files.length; i++) 
-    //     downloadFile(files[i], this.transport.buffers[i]); 
-    //   this.transport.clearBuffers();
-    // })
-    .catch(this.showError);
+      .catch(this.showError);
   }
 
   render() {
