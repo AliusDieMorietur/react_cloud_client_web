@@ -2,7 +2,7 @@ import React from 'react';
 import Header from './Header';
 import Accordeon from './Accordeon';
 import PathList from './PathList';
-import { findPlace, downloadFile, copyToClipboard, toFlat } from '../additional/utils' 
+import { findPlace, copyToClipboard, toFlat } from '../additional/utils' 
 
 export default class Permanent extends React.Component {
 	constructor(props) {
@@ -86,10 +86,9 @@ export default class Permanent extends React.Component {
       this.state.selected[0].childs === null;
 
     if (onlyFile) {
-      this.transport.socketCall('createLink', { 
-        name: 
-          this.state.selected[0].name 
-      })
+      const name = `${this.state.currentPath}${this.state.selected[0].name}`;
+
+      this.transport.socketCall('createLink', { name })
       .then(async token => {
         copyToClipboard(`${window.location.origin}/link/${token}`);
       })
@@ -100,14 +99,10 @@ export default class Permanent extends React.Component {
   download() {
     const fileList = toFlat(this.state.currentPath, this.state.selected);
 
+    console.log(fileList, this.state.currentPath);
     this.transport.names = fileList;
-    this.transport.socketCall('pmtDownload', { fileList })
-    // .then(files => { 
-    //   for (let i = 0; i < files.length; i++) 
-    //     downloadFile(files[i], this.transport.buffers[i]); 
-    //   this.transport.clearBuffers();
-    // })
-    .catch(console.log);
+    this.transport.socketCall('download', { fileList })
+      .catch(console.log);
   }
 
   delete() {
@@ -142,7 +137,7 @@ export default class Permanent extends React.Component {
       if (favouritesNames.includes(name)) {
         const index = favourites.indexOf(name);
         favourites.splice(index, 1);
-      } else favourites.push({ name, path: name });
+      } else favourites.push({ name, path: name + '/' });
       this.setState({ favourites });
     }
   }
@@ -226,7 +221,7 @@ export default class Permanent extends React.Component {
                       onClick = { () => {
                         if (this.state.renameIndex === -1) {
                           this.setState({ 
-                            currentPath: item.path + '/',
+                            currentPath: item.path,
                             selected: [],
                             renameIndex: -1,
                             selectState: false,
