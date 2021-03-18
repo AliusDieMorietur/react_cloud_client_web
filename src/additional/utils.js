@@ -22,12 +22,12 @@ export const downloadFile = (name, dataBlob) => {
 };
 
 export const copyToClipboard = str => {
-  const el = document.createElement('textarea');
-  el.value = str;
-  document.body.appendChild(el);
-  el.select();
+  const input = document.createElement('textarea');
+  input.value = str;
+  document.body.appendChild(input);
+  input.select();
   document.execCommand('copy');
-  document.body.removeChild(el);
+  document.body.removeChild(input);
 };
 
 export const toFlat = (currentPath, departure, destination = [], withFolders = false) => {
