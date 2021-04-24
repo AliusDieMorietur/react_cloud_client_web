@@ -1,20 +1,23 @@
+import { downloadFile } from "./utils";
+
 export default class Transport {
   constructor() {
     this.rebuildStructure = null;
-    this.buffers = [];
-    this.socket = new WebSocket('ws://' + window.location.host);
+    this.names = [];
+    this.counter = 0;
+    this.socket = new WebSocket("ws://" + window.location.host);
     this.callId = 0;
     this.calls = new Map();
-    this.socket.addEventListener('message', ({ data }) => {
+    this.socket.addEventListener("message", ({ data }) => {
       try {
-        if (typeof data === 'string') {
+        if (typeof data === "string") {
           const packet = JSON.parse(data);
-          const { structure } = packet; 
+          const { structure } = packet;
           if (structure && this.rebuildStructure) {
             this.rebuildStructure(structure);
             return;
           }
-          const { callId } = packet
+          const { callId } = packet;
           const promised = this.calls.get(callId);
           if (!promised) return;
           const [resolve, reject] = promised;
@@ -27,7 +30,12 @@ export default class Transport {
           }
           resolve(packet.result);
         } else {
-          this.buffers.push(data);
+          if (this.names.length !== 0) {
+            const item = this.names[this.counter];
+            const name = item.slice(item.lastIndexOf("/") + 1);
+            downloadFile(name, data);
+            this.counter = (this.counter + 1) % this.names.length;
+          }
         }
       } catch (err) {
         console.error(err);
@@ -35,12 +43,14 @@ export default class Transport {
     });
   }
 
-  clearBuffers() { this.buffers = []; }
+  clearBuffers() {
+    this.buffers = [];
+  }
 
   ready() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       if (this.socket.readyState === WebSocket.OPEN) resolve();
-      else this.socket.addEventListener('open', resolve);
+      else this.socket.addEventListener("open", resolve);
     });
   }
 
@@ -57,4 +67,4 @@ export default class Transport {
   bufferCall(buffer) {
     this.socket.send(buffer);
   }
-};
+}
